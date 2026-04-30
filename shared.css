@@ -317,3 +317,107 @@ hr.rp-div{border:none;border-top:1px dashed #ccc;margin:10px 0}
 ::-webkit-scrollbar-track{background:var(--navy2)}
 ::-webkit-scrollbar-thumb{background:var(--navy3);border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:rgba(201,168,76,.3)}
+
+/* ============================================================
+   RESPONSIVE — Móviles y Tablets
+   ============================================================ */
+
+/* Tablet (768px - 1024px) */
+@media(max-width:1024px){
+  :root{--sw:200px}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:1fr}
+  .tcard-grid{grid-template-columns:repeat(2,1fr)}
+  .prop-grid{grid-template-columns:repeat(2,1fr)}
+  .chat-layout{grid-template-columns:1fr;height:auto}
+  .conv-list{height:180px}
+  .chat-msgs{height:220px}
+}
+
+/* Móvil (hasta 767px) */
+@media(max-width:767px){
+  :root{--sw:0px}
+  html,body{overflow-y:auto;overflow-x:hidden}
+
+  /* Sidebar se convierte en menú inferior */
+  .sidebar{
+    position:fixed;bottom:0;left:0;right:0;top:auto;
+    width:100%;height:58px;
+    flex-direction:row;
+    border-right:none;border-top:1px solid var(--border);
+    z-index:200;overflow:hidden
+  }
+  .sb-logo{display:none}
+  .nav{
+    display:flex;flex-direction:row;align-items:center;
+    padding:0;flex:1;overflow-x:auto;overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none
+  }
+  .nav::-webkit-scrollbar{display:none}
+  .ns{display:none}
+  .ni{
+    flex-direction:column;gap:2px;padding:6px 12px;
+    font-size:9px;border-left:none;border-top:3px solid transparent;
+    min-width:54px;text-align:center;flex-shrink:0
+  }
+  .ni.on{border-top-color:var(--gold);border-left-color:transparent}
+  .ni svg{width:18px;height:18px}
+  .nbadge{position:absolute;top:2px;right:4px;font-size:8px;padding:1px 4px}
+  .ni{position:relative}
+  .sb-footer{display:none}
+
+  /* Main adjusts for bottom nav */
+  .main-wrap{margin-bottom:58px;width:100%}
+  #save-bar{left:0;bottom:58px}
+  #admin-bar{left:0}
+
+  /* Topbar */
+  .topbar{padding:10px 14px;gap:7px}
+  .page-title{font-size:15px}
+  .btn-sm{padding:5px 10px;font-size:11px}
+
+  /* Pages */
+  .page{padding:14px}
+
+  /* KPIs — 1 column on very small */
+  .kpi-row{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
+  .kc{padding:11px 13px}
+  .kc-val{font-size:18px}
+
+  /* Grids */
+  .g2,.g3{grid-template-columns:1fr;gap:10px}
+  .tcard-grid{grid-template-columns:1fr}
+  .prop-grid{grid-template-columns:1fr}
+  .config-grid{grid-template-columns:1fr}
+
+  /* Tables — horizontal scroll */
+  .panel div[style*="overflow-x"]{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tbl{min-width:500px}
+  .tbl th,.tbl td{padding:8px 10px;font-size:11px}
+
+  /* Profile panel full width on mobile */
+  #profile-panel{width:100%;border-left:none}
+
+  /* WhatsApp chat */
+  .chat-layout{grid-template-columns:1fr;height:auto}
+  .conv-list{height:160px}
+  .chat-win{min-height:320px}
+  .chat-msgs{height:200px}
+
+  /* Modals */
+  .modal{max-width:100%;margin:0 16px;border-radius:12px}
+  #portal-modal > div{width:calc(100vw - 32px);max-width:100%}
+
+  /* Tenant portal */
+  .ta-nav{padding:0 10px}
+  .ta-logo{font-size:12px;padding:10px 10px 10px 0;margin-right:10px;padding-right:10px}
+  .ta-link{padding:10px 10px;font-size:11px}
+  .ta-content{padding:12px}
+}
+
+/* Muy pequeño (hasta 380px) */
+@media(max-width:380px){
+  .kpi-row{grid-template-columns:1fr}
+  .topbar{gap:5px}
+  .page-title{font-size:14px}
+}
