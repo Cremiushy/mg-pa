@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MG-PA | Portal del Inquilino</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%230B1628'/><text font-size='32' font-family='Georgia,serif' fill='%23C9A84C' x='10' y='52'>MG</text><text font-size='20' font-family='Georgia,serif' fill='%23C9A84C' x='16' y='76'>PA</text></svg>">
+<link rel="stylesheet" href="shared.css">
+<style>
+html,body{overflow:hidden;height:100%}
+#tenant-gate-wrap{display:flex;height:100vh;align-items:center;justify-content:center;background:var(--navy)}
+#tenant-app-wrap{display:none;flex-direction:column;height:100vh}
+#tenant-app-wrap.on{display:flex}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div id="tenant-gate-wrap">
+  <div style="width:340px;background:var(--navy2);border:1px solid var(--border2);border-radius:16px;padding:30px;animation:fadeUp .5s ease">
+    <div style="display:flex;justify-content:center;margin-bottom:16px">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--navy3),var(--navy2));border:2px solid var(--gold);border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 16px rgba(201,168,76,.2)">
+        <div style="font-size:18px;font-family:var(--fd);color:var(--gold);font-weight:700;line-height:1">MG</div>
+        <div style="font-size:11px;font-family:var(--fd);color:var(--gold2)">PA</div>
+      </div>
+    </div>
+    <div style="font-family:var(--fd);font-size:20px;text-align:center;color:var(--white);margin-bottom:4px">Portal del Inquilino</div>
+    <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:22px;line-height:1.7">Accede con tu n&uacute;mero de c&eacute;dula para ver tu estado de cuenta, pagar facturas y m&aacute;s.</div>
+    <div style="font-size:10px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;font-weight:500">N&uacute;mero de c&eacute;dula</div>
+    <input id="cedula-input" type="text" placeholder="000-0000000-0" maxlength="13"
+      style="width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:9px;padding:11px 16px;color:var(--white);font-size:14px;font-family:var(--fd);outline:none;text-align:center;letter-spacing:.08em;transition:border-color .2s;margin-bottom:4px"
+      oninput="fmtCed(this)" onkeydown="if(event.key==='Enter')doLogin()">
+    <div id="ced-err" style="display:none;background:var(--red-bg);border:1px solid var(--red-bd);border-radius:7px;padding:7px 11px;font-size:11px;color:var(--danger);text-align:center;margin-bottom:8px">C&eacute;dula no encontrada. Verifica el n&uacute;mero.</div>
+    <button style="width:100%;background:var(--gold);color:var(--navy);border:none;padding:12px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--fb);transition:all .2s;margin-top:10px" onclick="doLogin()">Ingresar al portal</button>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:13px;line-height:1.6">Solo puedes ver tu propia informaci&oacute;n.<br>Cada inquilino accede con su c&eacute;dula &uacute;nica.</div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-top:14px">
+      <div onclick="demoLogin('001-1234567-8')"
+        style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:11px;color:var(--muted);cursor:pointer;text-align:center;transition:all .2s"
+        onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
+        Carlos M&eacute;ndez &mdash; <span style="color:var(--gold)">001-1234567-8</span> (en mora)
+      </div>
+      <div onclick="demoLogin('001-3334445-6')"
+        style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:11px;color:var(--muted);cursor:pointer;text-align:center;transition:all .2s"
+        onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
+        Mar&iacute;a Gonz&aacute;lez &mdash; <span style="color:var(--gold)">001-3334445-6</span> (al d&iacute;a)
+      </div>
+      <div onclick="demoLogin('001-7778889-1')"
+        style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:11px;color:var(--muted);cursor:pointer;text-align:center;transition:all .2s"
+        onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
+        Luis Fern&aacute;ndez &mdash; <span style="color:var(--gold)">001-7778889-1</span> (al d&iacute;a)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TENANT APP -->
+<div id="tenant-app-wrap">
+  <nav class="ta-nav">
+    <div class="ta-logo">MG-PA</div>
+    <div class="ta-links">
+      <div class="ta-link on" onclick="tGoPage('inicio',this)">Inicio</div>
+      <div class="ta-link" onclick="tGoPage('facturas',this)">Mis facturas</div>
+      <div class="ta-link" onclick="tGoPage('historial',this)">Historial</div>
+      <div class="ta-link" onclick="tGoPage('apartamento',this)">Mi apartamento</div>
+      <div class="ta-link" onclick="tGoPage('sugerencias',this)">Sugerencias</div>
+    </div>
+    <div class="ta-right">
+      <span style="font-size:12px;color:var(--muted)">Hola, <span id="ta-name" style="color:var(--white);font-weight:500">&mdash;</span></span>
+      <button class="btn btn-sm" style="background:transparent;border:1px solid var(--red-bd);color:var(--danger);padding:4px 10px" onclick="doLogout()">Salir</button>
+    </div>
+  </nav>
+  <div class="ta-content">
+    <div class="ta-page on" id="ta-inicio"></div>
+    <div class="ta-page" id="ta-facturas"></div>
+    <div class="ta-page" id="ta-historial"></div>
+    <div class="ta-page" id="ta-apartamento"></div>
+    <div class="ta-page" id="ta-sugerencias"></div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="overlay" id="pay-modal" onclick="if(event.target.id==='pay-modal')closePayModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="pay-title">Realizar pago</div>
+      <button class="mc" onclick="closePayModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:12px" id="pay-summary"></div>
+      <div class="pay-methods">
+        <div class="pm on" onclick="setPM(this,'card')">&#128179; Tarjeta</div>
+        <div class="pm" onclick="setPM(this,'transfer')">&#127970; Transferencia</div>
+        <div class="pm" onclick="setPM(this,'cash')">&#128181; Efectivo</div>
+      </div>
+      <div id="card-f">
+        <div class="field" style="margin-bottom:9px"><label>N&uacute;mero de tarjeta</label><input type="text" placeholder="0000 0000 0000 0000" oninput="fmtCard(this)" maxlength="19"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+          <div class="field"><label>Vencimiento</label><input type="text" placeholder="MM/AA" maxlength="5" oninput="fmtExp(this)"></div>
+          <div class="field"><label>CVV</label><input type="text" placeholder="&bull;&bull;&bull;" maxlength="3"></div>
+        </div>
+        <div class="field" style="margin-bottom:10px"><label>Nombre en tarjeta</label><input type="text" placeholder="Como aparece en la tarjeta"></div>
+      </div>
+      <div id="transfer-f" style="display:none">
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:12px;font-size:11px;color:var(--muted);line-height:1.8;margin-bottom:11px">
+          <div style="font-weight:600;color:var(--white);margin-bottom:5px">Datos para transferencia</div>
+          Banco: <span style="color:var(--white)">Banreservas</span><br>
+          Cuenta: <span style="color:var(--white)">002-1234567-8</span><br>
+          A nombre de: <span style="color:var(--white)">La Crema Propiedades SRL</span>
+        </div>
+        <div class="field" style="margin-bottom:10px"><label>N&uacute;mero de referencia</label><input type="text" placeholder="TRF-2025-..."></div>
+      </div>
+      <div id="cash-f" style="display:none">
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:12px;font-size:11px;color:var(--muted);line-height:1.8;margin-bottom:11px">
+          <div style="font-weight:600;color:var(--white);margin-bottom:5px">Pago en efectivo</div>
+          Dir&iacute;gete a nuestras oficinas Lun&ndash;Vie 9am&ndash;5pm.
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);justify-content:center;margin-bottom:12px">&#128274; Pago 100% seguro &mdash; SSL 256-bit</div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:13px" onclick="processPayment()">Confirmar y pagar</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECEIPT -->
+<div id="receipt-view">
+  <div class="rp">
+    <div class="rp-head"><div class="rp-logo">La Crema Propiedades</div><div class="rp-sub">MG-PA &middot; Recibo oficial</div></div>
+    <div class="rp-body">
+      <div class="rp-check">
+        <div class="rp-check-icon">&#10003;</div>
+        <div class="rp-title">Pago confirmado</div>
+        <div class="rp-dt" id="rc-dt">&mdash;</div>
+      </div>
+      <hr class="rp-div">
+      <div class="rp-row"><span class="rp-lbl">Inquilino</span><span id="rc-name">&mdash;</span></div>
+      <div class="rp-row"><span class="rp-lbl">Apartamento</span><span id="rc-apt">&mdash;</span></div>
+      <div class="rp-row"><span class="rp-lbl">Concepto</span><span id="rc-concept">&mdash;</span></div>
+      <div class="rp-row"><span class="rp-lbl">M&eacute;todo</span><span id="rc-method">&mdash;</span></div>
+      <div class="rp-row total"><span class="rp-lbl">Total pagado</span><span id="rc-amount">&mdash;</span></div>
+      <div class="rp-ref" id="rc-ref">REF: &mdash;</div>
+    </div>
+    <div class="rp-actions">
+      <button class="rpa dark" onclick="closeReceipt()">Cerrar</button>
+      <button class="rpa dark" onclick="toast('Enviando por WhatsApp...')">&#128242; WA</button>
+      <button class="rpa gold" onclick="toast('Descargando PDF...')">&#8595; PDF</button>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+var currentUser = null, payTarget = null, payMethodUsed = 'card', aptSsI = 0;
+
+// CHECK URL PARAMS (auto-login from index)
+window.addEventListener('load', function(){
+  var params = new URLSearchParams(window.location.search);
+  var ced = params.get('cedula');
+  if(ced){ document.getElementById('cedula-input').value = ced; doLogin(); }
+});
+
+function doLogin(){
+  var c = document.getElementById('cedula-input').value.trim();
+  var u = TENANTS.find(t => t.cedula === c);
+  if(!u){ document.getElementById('ced-err').style.display = 'block'; return; }
+  document.getElementById('ced-err').style.display = 'none';
+  currentUser = u;
+  document.getElementById('tenant-gate-wrap').style.display = 'none';
+  document.getElementById('tenant-app-wrap').classList.add('on');
+  document.getElementById('ta-name').textContent = u.short;
+  loadTenantApp(u);
+}
+function demoLogin(c){ document.getElementById('cedula-input').value = c; doLogin(); }
+function doLogout(){ currentUser = null; document.getElementById('tenant-app-wrap').classList.remove('on'); document.getElementById('tenant-gate-wrap').style.display = 'flex'; document.getElementById('cedula-input').value = ''; }
+function tGoPage(id, el){ document.querySelectorAll('.ta-link').forEach(l=>l.classList.remove('on')); document.querySelectorAll('.ta-page').forEach(p=>p.classList.remove('on')); if(el)el.classList.add('on'); document.getElementById('ta-'+id).classList.add('on'); }
+
+function loadTenantApp(u){
+  var sc = u.status;
+  var scColor = sc==='olive'?'var(--olive)':sc==='red'?'var(--danger)':'var(--orange)';
+  var totalPend = u.bills.filter(b=>b.status!=='ok').reduce((s,b)=>s+b.amount,0);
+
+  // INICIO
+  document.getElementById('ta-inicio').innerHTML = `
+    <div class="status-hero ${sc}">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:${scColor};margin-bottom:6px">${sc==='olive'?'Todo al d&iacute;a':sc==='red'?'Tienes pagos vencidos':'Pr&oacute;ximo a vencer'}</div>
+      <div style="font-family:var(--fd);font-size:22px;color:var(--white);margin-bottom:4px">${totalPend>0?'RD$ '+totalPend.toLocaleString()+' pendiente':'Sin saldo pendiente'}</div>
+      <div style="font-size:12px;color:var(--muted)">${u.daysLate>0?u.daysLate+' d&iacute;as de atraso':'Pagos al corriente'}</div>
+      <div class="sh-badge">${sc==='olive'?'&#10003;':'&#9888;'}</div>
+    </div>
+    <div class="g2">
+      <div class="panel"><div class="ph-title" style="padding:13px 16px;border-bottom:1px solid var(--border)">Renta mensual</div>
+        <div class="pb"><div style="font-family:var(--fd);font-size:24px;color:var(--gold)">RD$ ${u.renta.toLocaleString()}</div><div style="font-size:11px;color:var(--muted);margin-top:3px">Apto ${u.apt} &middot; ${u.edif}</div></div></div>
+      <div class="panel"><div class="ph-title" style="padding:13px 16px;border-bottom:1px solid var(--border)">Saldo pendiente</div>
+        <div class="pb"><div style="font-family:var(--fd);font-size:24px;color:${u.saldo>0?'var(--danger)':'var(--success)'}">${u.saldo>0?'RD$ '+u.saldo.toLocaleString():'RD$ 0'}</div><div style="font-size:11px;color:var(--muted);margin-top:3px">${u.saldo>0?'Requiere pago inmediato':'Cuenta al d&iacute;a'}</div></div></div>
+    </div>
+    <div class="panel"><div class="ph-title" style="padding:13px 16px;border-bottom:1px solid var(--border)">Pagos r&aacute;pidos pendientes</div>
+      <div class="pb">${u.bills.filter(b=>b.status!=='ok').map(b=>`
+        <div class="bill-item"><div class="bill-icon">${b.icon}</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--white)">${b.name}</div></div>
+          <span style="font-size:14px;font-weight:700;color:var(--white);margin-right:10px">RD$ ${b.amount.toLocaleString()}</span>
+          <span class="bill-st-pend">Pendiente</span>
+          <button class="pay-now" onclick="openPay('${b.id}','${b.name}',${b.amount})">Pagar</button>
+        </div>`).join('')||'<div style="font-size:13px;color:var(--success);text-align:center;padding:12px 0">&#10003; Todo pagado este mes</div>'}</div></div>`;
+
+  // FACTURAS
+  document.getElementById('ta-facturas').innerHTML = `
+    <div class="panel"><div class="ph"><div class="ph-title">Facturas de ${new Date().toLocaleString('es-DO',{month:'long',year:'numeric'})}</div></div>
+      <div class="pb">${u.bills.map(b=>{
+        var stClass = b.status==='ok'?'bill-st-ok':b.status==='warn'?'bill-st-warn':'bill-st-pend';
+        var stTxt = b.status==='ok'?'Pagado':b.status==='warn'?'Pr&oacute;ximo':'Pendiente';
+        return `<div class="bill-item"><div class="bill-icon">${b.icon}</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--white)">${b.name}</div></div>
+          <span style="font-size:14px;font-weight:700;color:var(--white);margin-right:9px">RD$ ${b.amount.toLocaleString()}</span>
+          <span class="${stClass}">${stTxt}</span>
+          ${b.status!=='ok'?`<button class="pay-now" onclick="openPay('${b.id}','${b.name}',${b.amount})">Pagar</button>`:`<button class="pay-now" disabled>&#10003; Pagado</button>`}
+        </div>`;}).join('')}</div></div>
+    <div class="panel"><div class="ph"><div class="ph-title">Pagar todo pendiente</div></div>
+      <div class="pb" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div><div style="font-family:var(--fd);font-size:24px;color:var(--gold)">RD$ ${totalPend.toLocaleString()}</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Total pendiente</div></div>
+        ${totalPend>0?`<button class="pay-now" style="padding:10px 22px;font-size:13px" onclick="openPay('all','Todas las facturas pendientes',${totalPend})">Pagar todo ahora</button>`:'<div style="color:var(--success);font-weight:600">&#10003; Todo pagado</div>'}
+      </div></div>`;
+
+  // HISTORIAL
+  document.getElementById('ta-historial').innerHTML = `
+    <div class="panel"><div class="ph"><div class="ph-title">Historial de pagos</div><span class="ph-sub">&Uacute;ltimos meses</span></div>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Fecha</th><th>Concepto</th><th>Monto</th><th>M&eacute;todo</th><th>Ref.</th><th>Recibo</th></tr></thead><tbody>
+      ${u.history.map(h=>`<tr><td>${h.date}</td><td>${h.concept}</td><td style="font-weight:600">${h.amount}</td><td class="muted">${h.method}</td><td class="muted" style="font-size:10px">${h.ref}</td>
+        <td><button class="btn btn-out btn-sm" onclick="showReceipt('${u.name}','Apto ${u.apt}','${h.amount}','${h.method}','${h.concept}','${h.date}')">&#129534;</button></td></tr>`).join('')}
+      </tbody></table></div></div>`;
+
+  // APARTAMENTO
+  var aptSlides=[{l:'Sala — entrada',type:'antes',e:'&#128715;',bg:'#1a2f4a'},{l:'Sala — entrada',type:'despues',e:'&#128715;',bg:'#1a3520'},{l:'Cocina',type:'antes',e:'&#127859;',bg:'#2e1a1a'},{l:'Cocina',type:'despues',e:'&#127859;',bg:'#1e2e1a'},{l:'Habitación',type:'antes',e:'&#128716;',bg:'#2a1a2e'},{l:'Habitación',type:'despues',e:'&#128716;',bg:'#1a2e28'}];
+  document.getElementById('ta-apartamento').innerHTML = `
+    <div class="panel" style="margin-bottom:14px">
+      <div class="ph"><div class="ph-title">Fotos del apartamento</div><span class="ph-sub">Registro oficial &middot; Protecci&oacute;n mutua</span></div>
+      <div class="pb">
+        <div class="ss-apt"><div class="ss-apt-wrap" id="apt-slides">${aptSlides.map(s=>`<div class="ss-apt-slide" style="background:${s.bg}">${s.e}<span class="ss-apt-type ${s.type}">${s.type.charAt(0).toUpperCase()+s.type.slice(1)}</span><span class="ss-apt-lbl">${s.l}</span></div>`).join('')}</div><button class="ss-nav ss-prev" onclick="aptMove(-1)">&#8249;</button><button class="ss-nav ss-next" onclick="aptMove(1)">&#8250;</button></div>
+        <div style="background:rgba(201,168,76,.05);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--muted);line-height:1.6;margin-top:9px">Fotos tomadas al momento de la entrega del apartamento. Registro oficial del estado del inmueble. Archivadas como evidencia para ambas partes.</div>
+      </div>
+    </div>
+    <div class="panel"><div class="ph"><div class="ph-title">Detalles del contrato</div></div>
+      <div class="pb"><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">${[['Nombre',u.name],['Apartamento','Apto '+u.apt+' · '+u.edif],['Cédula',u.cedula],['Teléfono',u.tel],['Renta mensual','RD$ '+u.renta.toLocaleString()],['Inicio contrato',u.inicio],['Vencimiento',u.vence],['N° contrato',u.contrato]].map(f=>`<div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:9px 11px"><div style="font-size:10px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px">${f[0]}</div><div style="font-size:13px;color:var(--white);font-weight:500">${f[1]}</div></div>`).join('')}</div></div></div>`;
+
+  // SUGERENCIAS
+  var sugItems = u.suggests && u.suggests.length
+    ? u.suggests.map(s=>`<div style="background:${s.from==='Admin'?'rgba(201,168,76,.07)':'var(--navy3)'};border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:600;color:${s.from==='Admin'?'var(--gold)':'var(--white)'};margin-bottom:4px">${s.from} <span style="color:var(--muted);font-weight:400">&middot; ${s.time}</span></div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5">${s.text}</div>
+      </div>`).join('')
+    : '<div style="font-size:12px;color:var(--muted);text-align:center;padding:16px 0">Sin mensajes a&uacute;n.</div>';
+  document.getElementById('ta-sugerencias').innerHTML = `
+    <div class="panel"><div class="ph"><div class="ph-title">Mis mensajes</div></div>
+      <div style="padding:14px 16px">
+        <div style="max-height:250px;overflow-y:auto;margin-bottom:14px">${sugItems}</div>
+        <div style="border-top:1px solid var(--border);padding-top:13px">
+          <div style="font-size:11px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px">Enviar mensaje al administrador</div>
+          <select style="width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--muted);font-size:12px;font-family:var(--fb);outline:none;margin-bottom:8px;transition:border-color .2s"><option>Mantenimiento</option><option>Informaci&oacute;n general</option><option>Consulta de pago</option><option>Urgente</option></select>
+          <textarea style="width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:9px 11px;color:var(--white);font-size:13px;font-family:var(--fb);resize:none;outline:none;height:70px;transition:border-color .2s;display:block;margin-bottom:9px" placeholder="Escribe tu mensaje..." id="ta-sug-txt" onfocus="this.style.borderColor='var(--border2)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+          <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="taSendSug()">Enviar mensaje</button>
+        </div>
+      </div></div>`;
+}
+
+function taSendSug(){ var t=document.getElementById('ta-sug-txt'); if(t&&t.value.trim()){toast('Mensaje enviado al administrador &#10003;'); t.value='';} }
+
+function aptMove(d){ var wrap=document.getElementById('apt-slides'); if(!wrap)return; var n=6; aptSsI=(aptSsI+d+n)%n; wrap.style.transform='translateX(-'+aptSsI*100+'%)'; }
+
+// PAYMENT
+function openPay(id, name, amount){
+  payTarget={id,name,amount};
+  document.getElementById('pay-title').textContent='Pagar: '+name;
+  document.getElementById('pay-summary').innerHTML=`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span style="color:var(--muted)">Concepto</span><span>${name}</span></div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span style="color:var(--muted)">Inquilino</span><span>${currentUser?currentUser.name:''}</span></div><div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;border-top:1px solid var(--border);padding-top:9px;margin-top:3px;color:var(--gold)"><span style="color:var(--muted)">Total</span><span>RD$ ${amount.toLocaleString()}</span></div>`;
+  document.getElementById('pay-modal').classList.add('open');
+}
+function closePayModal(){ document.getElementById('pay-modal').classList.remove('open'); }
+function setPM(el,m){ document.querySelectorAll('.pm').forEach(p=>p.classList.remove('on')); el.classList.add('on'); payMethodUsed=m; document.getElementById('card-f').style.display=m==='card'?'block':'none'; document.getElementById('transfer-f').style.display=m==='transfer'?'block':'none'; document.getElementById('cash-f').style.display=m==='cash'?'block':'none'; }
+function processPayment(){
+  if(!payTarget||!currentUser) return;
+  var u=currentUser;
+  var methods={card:'Tarjeta de crédito',transfer:'Transferencia bancaria',cash:'Efectivo'};
+  var ref='TRF-'+Date.now().toString().slice(-6);
+  var now=new Date().toLocaleString('es-DO',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  // update bills
+  if(payTarget.id==='all'){u.bills.forEach(b=>{if(b.status!=='ok')b.status='ok';}); u.saldo=0; u.pagado=u.renta;}
+  else{var bill=u.bills.find(b=>b.id===payTarget.id);if(bill)bill.status='ok'; u.saldo=Math.max(0,u.saldo-payTarget.amount);}
+  if(u.saldo===0){u.status='olive';u.pagado=u.renta;}
+  // add history
+  u.history.unshift({date:'Ahora',concept:payTarget.name,amount:'RD$ '+payTarget.amount.toLocaleString(),method:methods[payMethodUsed],ref});
+  loadTenantApp(u);
+  closePayModal();
+  document.getElementById('rc-name').textContent=u.name;
+  document.getElementById('rc-apt').textContent='Apto '+u.apt+' · '+u.edif;
+  document.getElementById('rc-concept').textContent=payTarget.name;
+  document.getElementById('rc-method').textContent=methods[payMethodUsed];
+  document.getElementById('rc-amount').textContent='RD$ '+payTarget.amount.toLocaleString();
+  document.getElementById('rc-ref').textContent='REF: '+ref;
+  document.getElementById('rc-dt').textContent=now;
+  document.getElementById('receipt-view').classList.add('open');
+}
+function closeReceipt(){ document.getElementById('receipt-view').classList.remove('open'); }
+function showReceipt(name,apt,amount,method,concept,date){ document.getElementById('rc-name').textContent=name; document.getElementById('rc-apt').textContent=apt; document.getElementById('rc-amount').textContent=amount; document.getElementById('rc-method').textContent=method; document.getElementById('rc-concept').textContent=concept; document.getElementById('rc-dt').textContent=date; document.getElementById('rc-ref').textContent='REF: TRF-'+Math.floor(4800+Math.random()*199); document.getElementById('receipt-view').classList.add('open'); }
+</script>
+</body>
+</html>

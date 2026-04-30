@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MG-PA | Portal La Crema Propiedades</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%230B1628'/><text font-size='32' font-family='Georgia,serif' fill='%23C9A84C' x='10' y='52'>MG</text><text font-size='20' font-family='Georgia,serif' fill='%23C9A84C' x='16' y='76'>PA</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0B1628;--navy2:#112240;--navy3:#1a3158;
+  --gold:#C9A84C;--gold2:#E8C47A;
+  --white:#F8F6F2;--muted:#8896A8;
+  --danger:#E05555;--success:#3DBB8A;--warn:#E8A23A;
+  --border:rgba(201,168,76,0.15);--border2:rgba(201,168,76,0.3);
+  --fd:'Playfair Display',serif;--fb:'DM Sans',sans-serif;
+}
+html,body{height:100%;font-family:var(--fb);background:var(--navy);color:var(--white);overflow:hidden}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:9999;background:var(--navy);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .7s ease}
+#splash.hide{opacity:0;pointer-events:none}
+.sp-icon{width:86px;height:86px;background:linear-gradient(135deg,var(--navy2),var(--navy3));border:2px solid var(--gold);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(201,168,76,.25);animation:iconpulse 2s ease infinite}
+.sp-mg{font-size:26px;font-family:var(--fd);color:var(--gold);font-weight:700;line-height:1}
+.sp-pa{font-size:14px;font-family:var(--fd);color:var(--gold2);letter-spacing:.06em}
+@keyframes iconpulse{0%,100%{box-shadow:0 0 30px rgba(201,168,76,.2)}50%{box-shadow:0 0 60px rgba(201,168,76,.45)}}
+.sp-title{font-family:var(--fd);font-size:30px;color:var(--white)}
+.sp-sub{font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase}
+.sp-bar{width:200px;height:2px;background:var(--navy3);border-radius:2px;overflow:hidden}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:spload 2s ease forwards}
+@keyframes spload{from{width:0}to{width:100%}}
+
+/* GATE WITH SLIDESHOW */
+#gate{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center}
+.ss-bg{position:absolute;inset:0;overflow:hidden}
+.ss-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease;display:flex;align-items:center;justify-content:center;font-size:110px}
+.ss-slide.on{opacity:1}
+.ss-ov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(11,22,40,.92),rgba(11,22,40,.68),rgba(11,22,40,.92))}
+.ss-lbl{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(11,22,40,.8);border:1px solid var(--border2);border-radius:20px;padding:5px 16px;font-size:11px;color:var(--gold);letter-spacing:.09em;backdrop-filter:blur(10px);white-space:nowrap;z-index:2}
+.ss-dots{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}
+.sd{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .35s}
+.sd.on{background:var(--gold);width:18px;border-radius:3px}
+
+/* GATE CARD */
+.gate-card{position:relative;z-index:1;width:380px;background:rgba(17,34,64,.92);border:1px solid var(--border2);border-radius:20px;padding:32px;backdrop-filter:blur(16px);animation:fadeUp .7s ease;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.gate-logo-row{display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:8px}
+.gate-icon-box{width:54px;height:54px;background:linear-gradient(135deg,var(--navy2),var(--navy3));border:2px solid var(--gold);border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 16px rgba(201,168,76,.25)}
+.g-mg{font-size:18px;font-family:var(--fd);color:var(--gold);font-weight:700;line-height:1}
+.g-pa{font-size:11px;font-family:var(--fd);color:var(--gold2)}
+.gate-title{font-family:var(--fd);font-size:22px;color:var(--white);text-align:center;margin-bottom:4px}
+.gate-tag{font-size:10px;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:24px}
+.gate-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:22px;line-height:1.7}
+.gate-kbd-row{display:flex;justify-content:center;margin-bottom:12px}
+.gate-kbd{background:rgba(11,22,40,.7);border:1px solid var(--border2);border-radius:9px;padding:9px 18px;font-family:monospace;font-size:12px;color:var(--gold);display:flex;align-items:center;gap:5px}
+.kchip{background:rgba(26,49,88,.8);border:1px solid var(--border2);border-radius:4px;padding:2px 9px;font-size:11px}
+.gate-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:18px}
+.gbtn{width:100%;border:none;padding:13px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--fb);transition:all .2s;margin-bottom:8px}
+.gbtn.primary{background:var(--gold);color:var(--navy)}.gbtn.primary:hover{background:var(--gold2)}
+.gbtn.sec{background:transparent;border:1px solid var(--border2);color:var(--gold)}.gbtn.sec:hover{background:rgba(201,168,76,.1)}
+.gbtn.demo{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:12px;padding:9px}.gbtn.demo:hover{border-color:var(--border2);color:var(--white)}
+.gate-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+.gate-demo-pills{display:flex;flex-direction:column;gap:6px}
+.demo-pill{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:11px;color:var(--muted);cursor:pointer;transition:all .2s;text-align:center}
+.demo-pill:hover{border-color:var(--border2);color:var(--white)}
+.demo-pill span{color:var(--gold);font-weight:600}
+
+/* APP FRAME */
+#app-frame{display:none;width:100%;height:100vh;border:none}
+#app-frame.on{display:block}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-icon"><div class="sp-mg">MG</div><div class="sp-pa">PA</div></div>
+  <div class="sp-title">La Crema Propiedades</div>
+  <div class="sp-sub">Cargando portal administrativo...</div>
+  <div class="sp-bar"><div class="sp-fill"></div></div>
+</div>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="ss-bg" id="ss-bg"></div>
+  <div class="ss-dots" id="ss-dots"></div>
+  <div class="ss-lbl" id="ss-lbl">La Crema Propiedades — República Dominicana</div>
+  <div class="gate-card">
+    <div class="gate-logo-row">
+      <div class="gate-icon-box"><div class="g-mg">MG</div><div class="g-pa">PA</div></div>
+      <div>
+        <div style="font-family:var(--fd);font-size:22px;color:var(--white);line-height:1.2">La Crema<br>Propiedades</div>
+      </div>
+    </div>
+    <div class="gate-tag">Portal Administrativo v1.0</div>
+    <div class="gate-sub">Gestión completa de propiedades, inquilinos, cobros y agente IA WhatsApp. Solo administradores.</div>
+    <div class="gate-kbd-row">
+      <div class="gate-kbd"><span class="kchip">Ctrl</span>+<span class="kchip">Alt</span>+<span class="kchip">A</span><span style="color:var(--muted);margin-left:4px">acceso rápido</span></div>
+    </div>
+    <div class="gate-hint">Atajo de teclado para administradores autorizados</div>
+    <button class="gbtn primary" onclick="loadModule('admin')">🏢 Entrar al portal administrativo</button>
+    <button class="gbtn sec" onclick="loadModule('inquilino')">📱 Portal del inquilino (web app)</button>
+    <hr class="gate-divider">
+    <div style="font-size:10px;color:var(--muted);text-align:center;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase">Acceso demo rápido</div>
+    <div class="gate-demo-pills">
+      <div class="demo-pill" onclick="loadModule('admin')">Admin — <span>Portal completo</span></div>
+      <div class="demo-pill" onclick="loadModuleTenant('001-1234567-8')">Inquilino — <span>Carlos Méndez</span></div>
+      <div class="demo-pill" onclick="loadModuleTenant('001-3334445-6')">Inquilino — <span>María González</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP FRAME (loads modules) -->
+<iframe id="app-frame" src="" allow="*"></iframe>
+
+<script>
+// SLIDESHOW
+var SS=[
+  {label:'Edificio Los Pinos',bg:'linear-gradient(135deg,#0d2b1a,#1a4a2e,#0d2b1a)',emoji:'🏢'},
+  {label:'Edificio Palma',bg:'linear-gradient(135deg,#1a1a2e,#2e1a3a,#1a1a2e)',emoji:'🏗'},
+  {label:'Edificio Centro',bg:'linear-gradient(135deg,#0d2a2e,#1a3a3a,#0d2a2e)',emoji:'🏛'},
+  {label:'Área de Parqueos',bg:'linear-gradient(135deg,#2e1a0d,#3a2a18,#2e1a0d)',emoji:'🅿️'},
+  {label:'Área Verde',bg:'linear-gradient(135deg,#0d2b0d,#1a4a1a,#0d2b0d)',emoji:'🌿'},
+  {label:'Área de Juegos',bg:'linear-gradient(135deg,#1a0d2e,#2e1a3a,#1a0d2e)',emoji:'🎠'},
+];
+var ssI=0, ssT=null;
+function initSS(){
+  var bg=document.getElementById('ss-bg'), dots=document.getElementById('ss-dots');
+  SS.forEach(function(s,i){
+    var el=document.createElement('div');
+    el.className='ss-slide'+(i===0?' on':'');
+    el.style.cssText='position:absolute;inset:0;opacity:'+(i===0?1:0)+';transition:opacity 1.6s ease;background:'+s.bg+';display:flex;align-items:center;justify-content:center;font-size:110px';
+    el.innerHTML='<span style="opacity:.12">'+s.emoji+'</span>';
+    var ov=document.createElement('div');ov.className='ss-ov';
+    bg.appendChild(el);bg.appendChild(ov);
+    var d=document.createElement('div');d.className='sd'+(i===0?' on':'');
+    d.onclick=function(){ssGo(i);};dots.appendChild(d);
+  });
+  ssT=setInterval(function(){ssGo((ssI+1)%SS.length);},60000);
+}
+function ssGo(i){
+  var slides=document.querySelectorAll('.ss-slide'),dots=document.querySelectorAll('.sd');
+  slides[ssI].style.opacity='0';dots[ssI].classList.remove('on');
+  ssI=i;slides[ssI].style.opacity='1';dots[ssI].classList.add('on');
+  document.getElementById('ss-lbl').textContent=SS[ssI].label+' — La Crema Propiedades';
+}
+
+// LOAD MODULE
+function loadModule(type){
+  clearInterval(ssT);
+  document.getElementById('gate').style.display='none';
+  var frame=document.getElementById('app-frame');
+  frame.src=type==='admin'?'admin.html':'tenant.html';
+  frame.classList.add('on');
+}
+function loadModuleTenant(cedula){
+  clearInterval(ssT);
+  document.getElementById('gate').style.display='none';
+  var frame=document.getElementById('app-frame');
+  frame.src='tenant.html?cedula='+cedula;
+  frame.classList.add('on');
+}
+
+// KEYBOARD
+document.addEventListener('keydown',function(e){
+  if(e.ctrlKey&&e.altKey&&(e.key==='a'||e.key==='A')){e.preventDefault();loadModule('admin');}
+});
+
+// INIT
+window.addEventListener('load',function(){
+  initSS();
+  setTimeout(function(){
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(function(){document.getElementById('splash').style.display='none';},700);
+  },2200);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MG-PA | Portal Administrativo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%230B1628'/><text font-size='32' font-family='Georgia,serif' fill='%23C9A84C' x='10' y='52'>MG</text><text font-size='20' font-family='Georgia,serif' fill='%23C9A84C' x='16' y='76'>PA</text></svg>">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<!-- ADMIN MODE BANNER -->
+<div id="admin-bar">
+  <div class="ap"></div>
+  <span>Modo administrador activo — campos editables</span>
+  <div class="akr">
+    <span class="akbd">Ctrl+S</span> guardar &middot;
+    <span class="akbd">Ctrl+Alt+E</span> editar &middot;
+    <span class="akbd">Ctrl+Alt+M</span> inventario &middot;
+    <span class="akbd">Ctrl+Alt+R</span> reportes &middot;
+    <span class="akbd">Ctrl+Alt+W</span> WhatsApp
+  </div>
+</div>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo" onclick="goPage('dashboard')">
+      <div class="sb-logo-t">La Crema<br>Propiedades</div>
+      <div class="sb-logo-s">Portal Admin</div>
+      <div class="sb-badge">MG-PA v1.0</div>
+    </div>
+    <nav class="nav">
+      <div class="ns">Principal</div>
+      <div class="ni on" id="ni-dashboard" onclick="goPage('dashboard')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="ni" id="ni-inquilinos" onclick="goPage('inquilinos')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.314 2.686-6 6-6s6 2.686 6 6"/></svg>
+        Inquilinos <span class="nbadge">3</span>
+      </div>
+      <div class="ni" id="ni-cobros" onclick="goPage('cobros')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="14" height="9" rx="2"/><path d="M1 7h14"/></svg>
+        Cobros y pagos
+      </div>
+      <div class="ns">Propiedades</div>
+      <div class="ni" id="ni-inventario" onclick="goPage('inventario')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8L8 2l6 6v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></svg>
+        Inventario
+      </div>
+      <div class="ni" id="ni-mantenimiento" onclick="goPage('mantenimiento')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4a2 2 0 0 0-2.83 0l-5.5 5.5A2 2 0 0 0 6.5 12.5l5.5-5.5A2 2 0 0 0 12 4z"/></svg>
+        Mantenimiento
+      </div>
+      <div class="ns">Finanzas</div>
+      <div class="ni" id="ni-reportes" onclick="goPage('reportes')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l4-4 3 3 5-7"/></svg>
+        Reportes
+      </div>
+      <div class="ns">Comunicaci&oacute;n</div>
+      <div class="ni" id="ni-whatsapp" onclick="goPage('whatsapp')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 8A6 6 0 1 1 8 2a6 6 0 0 1 6 6z"/><path d="M5.5 8.5c.5 1 1.5 2 2.5 2.5l1-1 1.5.5c-.5 1.5-3 2-5-1.5S4 4.5 5.5 4l.5 1.5-1 1z"/></svg>
+        Agente WhatsApp
+      </div>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-av">LC</div>
+        <div>
+          <div style="font-size:11px;font-weight:500;color:var(--white)">Administrador</div>
+          <div style="font-size:9px;color:var(--muted)">809-356-4915</div>
+        </div>
+        <button class="btn btn-out btn-sm" style="margin-left:auto;padding:4px 9px;font-size:10px" onclick="toggleAdmin()">&#9881;</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-wrap">
+    <div class="topbar">
+      <div class="page-title" id="page-title">Dashboard</div>
+      <div id="topbar-extra"></div>
+      <button class="btn btn-out btn-sm" onclick="toggleAdmin()">&#9881; Admin</button>
+      <button class="btn btn-gold btn-sm" id="topbar-action" onclick="topbarAction()">+ Nuevo</button>
+    </div>
+    <div class="pages" id="pages"></div>
+  </div>
+</div>
+
+<!-- PROFILE PANEL -->
+<div id="pp-back" onclick="closeProfile()"></div>
+<div id="profile-panel">
+  <div class="pp-bar">
+    <button class="pp-close" onclick="closeProfile()">&#10005;</button>
+    <div class="pp-title" id="pp-title">Perfil</div>
+    <button class="btn btn-out btn-sm" onclick="sendWAToTenant()">&#128242; WA</button>
+    <button class="btn btn-gold btn-sm" onclick="toggleAdmin()">&#9998; Editar</button>
+  </div>
+  <div class="pp-body" id="pp-body"></div>
+  <div style="padding:11px 18px;border-top:1px solid var(--border2);background:var(--navy3);display:none;align-items:center;gap:9px" id="pp-save-bar">
+    <span style="font-size:12px;color:var(--gold);flex:1">Cambios sin guardar</span>
+    <button class="btn btn-out btn-sm" onclick="cancelAdmin()">Cancelar</button>
+    <button class="btn btn-gold btn-sm" onclick="saveAdmin()">Guardar</button>
+  </div>
+</div>
+
+<!-- SAVE BAR -->
+<div id="save-bar">
+  <span style="font-size:12px;color:var(--gold);flex:1">Modo edici&oacute;n activo &mdash; cambios sin guardar</span>
+  <button class="btn btn-out btn-sm" onclick="cancelAdmin()">Cancelar</button>
+  <button class="btn btn-gold btn-sm" onclick="saveAdmin()">Guardar cambios</button>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="overlay" id="pay-modal" onclick="if(event.target.id==='pay-modal')closePayModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="pay-title">Realizar pago</div>
+      <button class="mc" onclick="closePayModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:12px" id="pay-summary"></div>
+      <div class="pay-methods">
+        <div class="pm on" onclick="setPM(this,'card')">&#128179; Tarjeta</div>
+        <div class="pm" onclick="setPM(this,'transfer')">&#127970; Transferencia</div>
+        <div class="pm" onclick="setPM(this,'cash')">&#128181; Efectivo</div>
+      </div>
+      <div id="card-f">
+        <div class="field" style="margin-bottom:9px"><label>N&uacute;mero de tarjeta</label><input type="text" placeholder="0000 0000 0000 0000" oninput="fmtCard(this)" maxlength="19"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+          <div class="field"><label>Vencimiento</label><input type="text" placeholder="MM/AA" maxlength="5" oninput="fmtExp(this)"></div>
+          <div class="field"><label>CVV</label><input type="text" placeholder="&bull;&bull;&bull;" maxlength="3"></div>
+        </div>
+        <div class="field" style="margin-bottom:10px"><label>Nombre en tarjeta</label><input type="text" placeholder="Como aparece en la tarjeta"></div>
+      </div>
+      <div id="transfer-f" style="display:none">
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:12px;font-size:11px;color:var(--muted);line-height:1.8;margin-bottom:11px">
+          <div style="font-weight:600;color:var(--white);margin-bottom:5px">Datos para transferencia</div>
+          Banco: <span style="color:var(--white)">Banreservas</span><br>
+          Cuenta: <span style="color:var(--white)">002-1234567-8</span><br>
+          A nombre de: <span style="color:var(--white)">La Crema Propiedades SRL</span>
+        </div>
+        <div class="field" style="margin-bottom:10px"><label>N&uacute;mero de referencia</label><input type="text" placeholder="TRF-2025-..."></div>
+      </div>
+      <div id="cash-f" style="display:none">
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:12px;font-size:11px;color:var(--muted);line-height:1.8;margin-bottom:11px">
+          <div style="font-weight:600;color:var(--white);margin-bottom:5px">Pago en efectivo</div>
+          Dir&iacute;gete a nuestras oficinas L&ndash;V 9am&ndash;5pm.
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);justify-content:center;margin-bottom:12px">&#128274; Pago 100% seguro &mdash; SSL 256-bit</div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center;padding:12px;font-size:13px" onclick="processPayment()">Confirmar y pagar</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECEIPT -->
+<div id="receipt-view">
+  <div class="rp">
+    <div class="rp-head"><div class="rp-logo">La Crema Propiedades</div><div class="rp-sub">MG-PA &middot; Recibo oficial</div></div>
+    <div class="rp-body">
+      <div class="rp-check">
+        <div class="rp-check-icon">&#10003;</div>
+        <div class="rp-title">Pago confirmado</div>
+        <div class="rp-dt" id="rc-dt">&mdash;</div>
+      </div>
+      <hr class="rp-div">
+      <div class="rp-row"><span class="rp-lbl">Inquilino</span><span id="rc-name">&mdash;</span></div>
+      <div class="rp-row"><span class="rp-lbl">Apartamento</span><span id="rc-apt">&mdash;</span></div>
+      <div class="rp-row"><span class="rp-lbl">Concepto</span><span id="rc-concept">&mdash;</span></div>
+      <div class="rp-row"><span class="rp-lbl">M&eacute;todo</span><span id="rc-method">&mdash;</span></div>
+      <div class="rp-row total"><span class="rp-lbl">Total pagado</span><span id="rc-amount">&mdash;</span></div>
+      <div class="rp-ref" id="rc-ref">REF: &mdash;</div>
+    </div>
+    <div class="rp-actions">
+      <button class="rpa dark" onclick="closeReceipt()">Cerrar</button>
+      <button class="rpa dark" onclick="toast('Enviando por WhatsApp...')">&#128242; WA</button>
+      <button class="rpa gold" onclick="toast('Descargando PDF...')">&#8595; PDF</button>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+var adminMode=false, currentPage='dashboard', currentTenant=null, payTarget=null, payMethodUsed='card';
+
+function goPage(p){
+  currentPage=p;
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
+  var ni=document.getElementById('ni-'+p); if(ni) ni.classList.add('on');
+  var titles={dashboard:'Dashboard',inquilinos:'Gesti&oacute;n de Inquilinos',cobros:'Cobros y Pagos',inventario:'Inventario de Propiedades',mantenimiento:'Mantenimiento',reportes:'Reportes Financieros',whatsapp:'Agente WhatsApp IA'};
+  var actions={dashboard:'+ Nuevo pago',inquilinos:'+ Nuevo inquilino',cobros:'+ Registrar pago',inventario:'+ Nueva unidad',mantenimiento:'+ Nuevo ticket',reportes:'&#8595; Exportar',whatsapp:'&#128226; Notificar todos'};
+  document.getElementById('page-title').innerHTML=titles[p]||p;
+  document.getElementById('topbar-action').innerHTML=actions[p]||'+ Nuevo';
+  var pages=document.getElementById('pages'); pages.innerHTML='';
+  var div=document.createElement('div'); div.className='page on'; div.id='page-'+p;
+  pages.appendChild(div); renderPage(p,div);
+}
+
+function renderPage(p,el){
+  if(p==='dashboard') renderDashboard(el);
+  else if(p==='inquilinos') renderInquilinos(el);
+  else if(p==='cobros') renderCobros(el);
+  else if(p==='inventario') renderInventario(el);
+  else if(p==='reportes') renderReportes(el);
+  else if(p==='whatsapp') renderWhatsApp(el);
+  else if(p==='mantenimiento') renderMantenimiento(el);
+}
+
+// ============ DASHBOARD ============
+function renderDashboard(el){
+  el.innerHTML=`
+  <div class="kpi-row">
+    <div class="kc gold"><div class="kc-lbl">Ingresos del mes</div><div class="kc-val gold">RD$ 1,240,000</div><div class="kc-sub">189 pagos recibidos</div><div class="kc-trend up">&#8593; 8.2% vs marzo</div></div>
+    <div class="kc green"><div class="kc-lbl">Ocupaci&oacute;n</div><div class="kc-val green">94.5%</div><div class="kc-sub">189 / 200 unidades</div><div class="kc-trend up">&#8593; 2.1% vs marzo</div></div>
+    <div class="kc red"><div class="kc-lbl">Inquilinos en mora</div><div class="kc-val red">11</div><div class="kc-sub">RD$ 342,500 pendiente</div><div class="kc-trend down">3 cr&iacute;ticos +30 d&iacute;as</div></div>
+    <div class="kc warn"><div class="kc-lbl">Contratos por vencer</div><div class="kc-val warn">7</div><div class="kc-sub">Pr&oacute;ximos 60 d&iacute;as</div></div>
+  </div>
+  <div class="g3">
+    <div class="panel">
+      <div class="ph"><div class="ph-title">Ingresos mensuales &mdash; 6 meses</div><span class="ph-sub">RD$ miles</span></div>
+      <div class="pb"><div class="chart-bars" id="dash-chart" style="height:110px"></div></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-title">Actividad reciente</div></div>
+      <div class="pb" style="padding:8px 16px">
+        ${[{d:'var(--success)',t:'Pago recibido &mdash; Mar&iacute;a Gonz&aacute;lez',s:'Hace 12 min &middot; RD$ 28,000 &middot; BHD'},
+           {d:'var(--gold)',t:'Nuevo contrato &mdash; Apto 9A',s:'Hace 1 hora &middot; Pedro Santana'},
+           {d:'var(--warn)',t:'Ticket mantenimiento &mdash; Apto 3D',s:'Hace 2 horas &middot; Plomer&iacute;a'},
+           {d:'var(--danger)',t:'Mora enviada &times;8 &mdash; WhatsApp',s:'Hace 3 horas &middot; Agente IA'},
+           {d:'var(--success)',t:'Conciliaci&oacute;n bancaria lista',s:'Hoy 8:00 AM &middot; Banreservas'}]
+           .map(a=>`<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid rgba(201,168,76,.05)"><div style="width:7px;height:7px;border-radius:50%;background:${a.d};flex-shrink:0;margin-top:4px"></div><div><div style="font-size:12px;color:var(--white)">${a.t}</div><div style="font-size:10px;color:var(--muted)">${a.s}</div></div></div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="ph-title">&#9888; Mora urgente &mdash; acci&oacute;n requerida</div><button class="btn btn-out btn-sm" onclick="goPage('cobros')">Ver todos &#8594;</button></div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Inquilino</th><th>Apartamento</th><th>D&iacute;as</th><th>Monto</th><th>Acci&oacute;n</th></tr></thead><tbody>
+    ${TENANTS.filter(t=>t.status==='red').map(t=>`<tr>
+      <td style="cursor:pointer;color:var(--gold);font-weight:500" onclick="openProfile(${t.id})">${t.name}</td>
+      <td class="muted">Apto ${t.apt} &middot; ${t.edif}</td>
+      <td><span style="background:var(--red-bg);color:var(--danger);border:1px solid var(--red-bd);padding:2px 8px;border-radius:9px;font-size:10px;font-weight:700">${t.daysLate} d&iacute;as</span></td>
+      <td style="color:var(--danger);font-weight:600">RD$ ${t.saldo.toLocaleString()}</td>
+      <td><button class="btn btn-sm" style="background:var(--wa);color:#fff;border:none;border-radius:5px" onclick="toast('WhatsApp enviado a ${t.short}')">&#128242; WA</button></td>
+    </tr>`).join('')}
+    </tbody></table></div>
+  </div>`;
+  setTimeout(()=>buildBarChart('dash-chart',['Nov','Dic','Ene','Feb','Mar','Abr'],[980,1050,1120,1080,1150,1240],null),50);
+}
+
+// ============ INQUILINOS ============
+function renderInquilinos(el){
+  el.innerHTML=`
+  <div class="search-row">
+    <div class="sbox"><svg class="sico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3 3"/></svg><input type="text" placeholder="Buscar inquilino, apartamento, c&eacute;dula..." oninput="filterTenants(this.value)"></div>
+    <button class="fbtn on" onclick="filterByStatus(this,'all')">Todos (5)</button>
+    <button class="fbtn" onclick="filterByStatus(this,'olive')">Al d&iacute;a (2)</button>
+    <button class="fbtn" onclick="filterByStatus(this,'red')">En mora (3)</button>
+  </div>
+  <div class="tcard-grid" id="tenant-grid"></div>`;
+  renderTenantCards(TENANTS);
+}
+function renderTenantCards(list){
+  var g=document.getElementById('tenant-grid'); if(!g) return; g.innerHTML='';
+  list.forEach((t,i)=>{
+    var d=document.createElement('div'); d.className='tcard'; d.style.animationDelay=(i*.05)+'s';
+    var sb=t.suggests&&t.suggests.length?`<span style="background:rgba(201,168,76,.15);border:1px solid var(--border2);border-radius:9px;padding:2px 7px;font-size:9px;color:var(--gold);font-weight:700">${t.suggests.length} msg</span>`:'';
+    d.innerHTML=`<div class="tcard-top ${t.status}"></div><div class="tcard-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:7px">
+        <div style="display:flex;gap:9px;align-items:flex-start;flex:1;min-width:0">
+          <div class="tcard-av">${t.initials}</div>
+          <div style="flex:1;min-width:0"><div class="tcard-nm">${t.name}</div><div class="tcard-apt">Apto ${t.apt} &middot; ${t.edif}</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+          <span class="badge ${t.status==='olive'?'ok':t.status==='red'?'pend':'late'}">${t.status==='olive'?'Al d&iacute;a':t.status==='red'?'En mora':'Atraso'}</span>
+          ${sb}
+        </div>
+      </div>
+      <div class="tcard-meta">
+        <div>Renta: <span>RD$ ${t.renta.toLocaleString()}</span></div>
+        <div>CI: <span>${t.cedula}</span></div>
+        ${t.daysLate>0?`<div>Mora: <span style="color:var(--danger)">${t.daysLate} d&iacute;as</span></div>`:''}
+      </div>
+    </div>`;
+    d.onclick=()=>openProfile(t.id);
+    g.appendChild(d);
+  });
+}
+function filterTenants(q){renderTenantCards(q?TENANTS.filter(t=>(t.name+t.apt+t.edif+t.cedula).toLowerCase().includes(q.toLowerCase())):TENANTS);}
+function filterByStatus(btn,s){document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderTenantCards(s==='all'?TENANTS:TENANTS.filter(t=>t.status===s));}
+
+// ============ PROFILE PANEL ============
+function openProfile(id){
+  var t=TENANTS[id]; if(!t) return; currentTenant=t;
+  document.getElementById('pp-title').textContent=t.short+' — Apto '+t.apt;
+  var svcItems=[{k:'Renta',v:t.saldo>0?'Pendiente':'Al d&iacute;a',c:t.saldo>0?'bad':'ok'},{k:'Agua',v:'Al d&iacute;a',c:'ok'},{k:'Electricidad',v:t.bills[1].status==='ok'?'Al d&iacute;a':'Pendiente',c:t.bills[1].status==='ok'?'ok':'bad'},{k:'Internet',v:t.bills[3].status==='ok'?'Al d&iacute;a':'Pendiente',c:t.bills[3].status==='ok'?'ok':'bad'}];
+  var histRows=t.history.map(h=>`<div class="hist-row"><div class="hdot" style="background:var(--success)"></div><div style="flex:1;font-weight:500">${h.concept}</div><div>${h.amount}</div><div style="color:var(--muted)">${h.method}</div><div style="color:var(--muted)">${h.date}</div></div>`).join('');
+  var sugItems=t.suggests&&t.suggests.length?t.suggests.map(s=>`<div class="si"><div class="si-top"><div class="si-av">${s.initials}</div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--white)">${s.from}</div><div style="font-size:10px;color:var(--muted)">${s.time}</div></div><span class="si-tag ${s.tag}">${s.tagLbl}</span></div><div class="si-text">${s.text}</div><div class="si-actions"><button class="si-btn" onclick="toast('Respondiendo...')">&#8617; Responder</button><button class="si-btn primary" onclick="toast('WhatsApp enviado')">&#128242; WA</button></div></div>`).join('')+'':'<div style="padding:14px;font-size:12px;color:var(--muted);text-align:center">Sin mensajes a&uacute;n.</div>';
+  document.getElementById('pp-body').innerHTML=`
+  <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">
+    <div class="pp-av">${t.initials}</div>
+    <div><div style="font-family:var(--fd);font-size:19px;color:var(--white)">${t.name}</div><div style="font-size:12px;color:var(--gold);margin-top:3px">Apto ${t.apt} &middot; ${t.edif}</div></div>
+  </div>
+  <div class="pay-block ${t.status}">
+    <div class="pay-tag">${t.status==='olive'?'Al corriente':t.status==='red'?'En mora':'Pr&oacute;ximo'}</div>
+    <div class="pay-main">${t.saldo>0?'RD$ '+t.saldo.toLocaleString()+' pendiente':'Sin saldo pendiente'}</div>
+    <div class="pay-sub">${t.daysLate>0?t.daysLate+' d&iacute;as de atraso':'Pagos al corriente'}</div>
+  </div>
+  <div class="pp-card"><div class="pp-card-head">Informaci&oacute;n personal</div><div class="pp-fields">
+    ${ppF('Nombre','pp-nombre',t.name,'full')}${ppF('C&eacute;dula','pp-cedula',t.cedula)}${ppF('Tel&eacute;fono','pp-tel',t.tel)}${ppF('Correo','pp-email',t.email,'full')}${ppF('Apartamento','pp-apt','Apto '+t.apt+' &middot; '+t.edif,'full')}${ppF('Inicio contrato','pp-ini',t.inicio)}${ppF('Vencimiento','pp-vence',t.vence)}${ppF('Renta mensual','pp-renta','RD$ '+t.renta.toLocaleString())}${ppF('Dep&oacute;sito','pp-dep',t.deposito)}${ppF('N&deg; contrato','pp-cont',t.contrato,'full')}
+  </div></div>
+  <div class="pp-card"><div class="pp-card-head">Estado de servicios</div><div style="padding:10px 12px"><div class="svc-grid">${svcItems.map(s=>`<div class="svc-item"><span class="svc-nm">${s.k}</span><span class="svc-v ${s.c}">${s.v}</span></div>`).join('')}</div></div></div>
+  <div class="pp-card"><div class="pp-card-head">Historial de pagos</div><div style="padding:7px 12px 10px">${histRows||'<div style="font-size:11px;color:var(--muted);padding:7px 0">Sin historial.</div>'}</div></div>
+  <div class="suggest-panel"><div class="suggest-head"><div style="font-size:12px;font-weight:600;color:var(--white)">Panel de sugerencias</div><span style="background:rgba(201,168,76,.12);color:var(--gold);font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px">${t.suggests?t.suggests.length:0} mensajes</span></div><div class="suggest-list">${sugItems}</div><div class="suggest-new"><textarea placeholder="Enviar mensaje al inquilino..."></textarea><div style="display:flex;gap:7px"><button class="btn btn-out btn-sm" onclick="toast('Categor&iacute;a seleccionada')">Categor&iacute;a</button><button class="btn btn-out btn-sm" onclick="toast('Enviando por WhatsApp...')">&#128242; WA</button><button class="btn btn-gold btn-sm" onclick="toast('Mensaje enviado a ${t.short}')">Enviar</button></div></div></div>`;
+  document.getElementById('profile-panel').classList.add('open');
+  document.getElementById('pp-back').classList.add('on');
+}
+function ppF(lbl,id,val,cls){return `<div class="pp-f${cls?' '+cls:''}""><div class="pp-lbl">${lbl}</div><div class="pp-val" contenteditable="false" id="${id}">${val}</div></div>`;}
+function closeProfile(){document.getElementById('profile-panel').classList.remove('open');document.getElementById('pp-back').classList.remove('on');}
+function sendWAToTenant(){if(currentTenant)toast('WhatsApp enviado a '+currentTenant.short);}
+
+// ============ COBROS ============
+function renderCobros(el){
+  el.innerHTML=`
+  <div class="kpi-row">
+    <div class="kc gold"><div class="kc-lbl">Cobrado este mes</div><div class="kc-val gold">RD$ 1,240,000</div><div class="kc-sub">&#8593; 8.2% vs marzo</div></div>
+    <div class="kc red"><div class="kc-lbl">Total en mora</div><div class="kc-val red">RD$ 342,500</div><div class="kc-sub">11 inquilinos</div></div>
+    <div class="kc green"><div class="kc-lbl">Pagos este mes</div><div class="kc-val green">178</div><div class="kc-sub">De 189 ocupadas</div></div>
+    <div class="kc warn"><div class="kc-lbl">Pendientes</div><div class="kc-val warn">11</div><div class="kc-sub">Requieren acci&oacute;n</div></div>
+  </div>
+  <div class="tabs">
+    <div class="tab on" onclick="cTab('historial',this)">Historial</div>
+    <div class="tab" onclick="cTab('registrar',this)">Registrar pago</div>
+    <div class="tab" onclick="cTab('conciliacion',this)">Conciliaci&oacute;n bancaria</div>
+  </div>
+  <div class="tv on" id="ctv-historial">
+    <div class="panel"><div class="ph"><div class="ph-title">Pagos recientes</div></div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>Inquilino</th><th>Monto</th><th>Banco</th><th>Fecha</th><th>Concepto</th><th>Estado</th><th></th></tr></thead><tbody>
+    ${PAYMENTS.map(p=>{var t=TENANTS[p.tid];return `<tr>
+      <td class="muted" style="font-size:10px">${p.id}</td>
+      <td style="cursor:pointer;color:var(--gold);font-weight:500" onclick="openProfile(${p.tid})">${t.name}</td>
+      <td style="font-weight:600">${p.amount}</td><td class="muted">${p.bank}</td><td class="muted">${p.date}</td>
+      <td class="ed" contenteditable="false">${p.concept}</td>
+      <td><span class="badge ${p.status==='ok'?'ok':p.status==='late'?'late':'pend'}">${p.status==='ok'?'Pagado':p.status==='late'?'Tard&iacute;o':'Pendiente'}</span></td>
+      <td><button class="btn btn-out btn-sm" onclick="showReceipt('${t.name}','Apto ${t.apt}','${p.amount}','${p.bank}','${p.concept}','${p.date}')">&#129534;</button></td>
+    </tr>`;}).join('')}
+    </tbody></table></div></div>
+  </div>
+  <div class="tv" id="ctv-registrar">
+    <div class="panel"><div class="ph"><div class="ph-title">Registrar nuevo pago</div></div><div class="pb">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+      <div class="field"><label>Inquilino</label><select><option>Seleccionar...</option>${TENANTS.map(t=>`<option>${t.name} &mdash; Apto ${t.apt}</option>`).join('')}</select></div>
+      <div class="field"><label>Monto (RD$)</label><input type="number" placeholder="Ej: 28000"></div>
+      <div class="field"><label>Banco / M&eacute;todo</label><select><option>Banreservas</option><option>Banco Popular</option><option>BHD Le&oacute;n</option><option>Scotiabank</option><option>Efectivo</option></select></div>
+      <div class="field"><label>Fecha</label><input type="date"></div>
+      <div class="field"><label>Referencia</label><input type="text" placeholder="TRF-2025-..."></div>
+      <div class="field"><label>Concepto</label><select><option>Renta mensual</option><option>Agua</option><option>Electricidad</option><option>Internet</option><option>&Aacute;rea com&uacute;n</option></select></div>
+      <div style="grid-column:1/-1;display:flex;gap:9px;justify-content:flex-end">
+        <button class="btn btn-out" onclick="toast('Vista previa generada')">&#129534; Vista previa</button>
+        <button class="btn btn-gold" onclick="toast('Pago registrado exitosamente &#10003;')">Guardar pago</button>
+      </div>
+    </div></div></div>
+  </div>
+  <div class="tv" id="ctv-conciliacion">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:11px">
+    ${[{n:'BANRESERVAS',c:'#E05555',v:'RD$ 312,000'},{n:'B. POPULAR',c:'#C9A84C',v:'RD$ 198,500'},{n:'BHD LE&Oacute;N',c:'#3DBB8A',v:'RD$ 287,000'},{n:'SCOTIABANK',c:'#64A0E6',v:'RD$ 144,500'}].map(b=>`
+    <div class="panel" style="margin:0"><div class="pb" style="padding:14px;text-align:center">
+      <div style="font-size:10px;font-weight:800;color:${b.c};padding:4px 8px;background:${b.c}22;border-radius:5px;margin-bottom:8px">${b.n}</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:3px">Recibido hoy</div>
+      <div style="font-size:16px;font-weight:700;color:var(--white);margin-bottom:9px;font-family:var(--fd)">${b.v}</div>
+      <button class="btn btn-out btn-sm" style="width:100%;justify-content:center" onclick="toast('${b.n} sincronizado &#10003;')">&#8635; Sincronizar</button>
+    </div></div>`).join('')}
+    </div>
+  </div>`;
+}
+function cTab(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('[id^="ctv-"]').forEach(v=>v.classList.remove('on'));el.classList.add('on');document.getElementById('ctv-'+id).classList.add('on');}
+
+// ============ INVENTARIO ============
+function renderInventario(el){
+  var units=[],edifs=['Los Pinos','Edificio Palma','Edificio Centro'],idx=0;
+  for(var b=0;b<3;b++){for(var u=0;u<8;u++){var st=idx<5?'ocupado':idx<7?'disponible':'mantenimiento';units.push({id:idx,apt:(u+1)+['A','B','C','D','E','F','G','H'][u],edif:edifs[b],status:st,renta:[18000,22500,25000,28000,31000,36500,42000,48000][u],type:['Estudio','1 hab','2 hab','2 hab','3 hab','3 hab','Penthouse','Penthouse'][u],tenant:idx<5?TENANTS[idx%5].name:'&mdash;'});idx++;}}
+  el.innerHTML=`
+  <div class="kpi-row">
+    <div class="kc gold"><div class="kc-lbl">Total unidades</div><div class="kc-val gold">200</div><div class="kc-sub">3 edificios</div></div>
+    <div class="kc green"><div class="kc-lbl">Ocupadas</div><div class="kc-val green">189</div><div class="kc-sub">94.5% ocupaci&oacute;n</div></div>
+    <div class="kc warn"><div class="kc-lbl">Disponibles</div><div class="kc-val warn">7</div><div class="kc-sub">Listas para rentar</div></div>
+    <div class="kc red"><div class="kc-lbl">Mantenimiento</div><div class="kc-val red">4</div><div class="kc-sub">Fuera de servicio</div></div>
+  </div>
+  <div class="search-row">
+    <div class="sbox"><svg class="sico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3 3"/></svg><input type="text" placeholder="Buscar apartamento, edificio..."></div>
+    <button class="fbtn on">Todas (24)</button>
+    <button class="fbtn">Ocupadas</button>
+    <button class="fbtn">Disponibles</button>
+    <button class="fbtn">Mant.</button>
+  </div>
+  <div class="prop-grid">${units.map((u,i)=>{var bgs={ocupado:'#0f2a1a',disponible:'#1a2f0d',mantenimiento:'#2e1a0f'};var emojis={ocupado:'&#127968;',disponible:'&#128273;',mantenimiento:'&#128295;'};return `<div class="pcard" style="animation-delay:${i*.03}s" onclick="toast('Panel detalle &mdash; Apto ${u.apt} &middot; ${u.edif}')">
+    <div class="pcard-img" style="background:${bgs[u.status]}">${emojis[u.status]}<div class="pcard-bar ${u.status}"></div></div>
+    <div style="padding:11px 13px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px"><div><div style="font-family:var(--fd);font-size:14px">Apto ${u.apt}</div><div style="font-size:10px;color:var(--muted)">${u.edif}</div></div><span class="spill ${u.status}">${u.status.charAt(0).toUpperCase()+u.status.slice(1)}</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${u.type} &middot; RD$ ${u.renta.toLocaleString()}</div>
+      <div style="font-size:11px;color:var(--muted);padding-top:6px;border-top:1px solid var(--border)">${u.tenant!=='&mdash;'?'<b style="color:var(--white)">'+u.tenant+'</b>':'<span style="color:var(--gold)">Disponible</span>'}</div>
+    </div>
+  </div>`;}).join('')}</div>`;
+}
+
+// ============ MANTENIMIENTO ============
+function renderMantenimiento(el){
+  el.innerHTML=`
+  <div class="kpi-row">
+    <div class="kc red"><div class="kc-lbl">Tickets abiertos</div><div class="kc-val red">8</div><div class="kc-sub">Requieren atenci&oacute;n</div></div>
+    <div class="kc warn"><div class="kc-lbl">En progreso</div><div class="kc-val warn">3</div><div class="kc-sub">T&eacute;cnico asignado</div></div>
+    <div class="kc green"><div class="kc-lbl">Resueltos este mes</div><div class="kc-val green">14</div><div class="kc-sub">Tiempo prom. 2.3 d&iacute;as</div></div>
+    <div class="kc gold"><div class="kc-lbl">Costo estimado</div><div class="kc-val gold">RD$ 28,500</div><div class="kc-sub">Trabajos pendientes</div></div>
+  </div>
+  <div class="panel"><div class="ph"><div class="ph-title">Tickets activos</div><button class="btn btn-gold btn-sm" onclick="toast('Nuevo ticket creado')">+ Nuevo ticket</button></div>
+  <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Ticket</th><th>Apartamento</th><th>Categor&iacute;a</th><th>Descripci&oacute;n</th><th>Prioridad</th><th>Estado</th></tr></thead><tbody>
+  ${[{t:'MNT-001',a:'4B &middot; Pinos',cat:'Climatizaci&oacute;n',d:'A/C habitaci&oacute;n principal',p:'alta',s:'En progreso'},
+     {t:'MNT-002',a:'2A &middot; Palma',cat:'Plomer&iacute;a',d:'Fuga en llave del ba&ntilde;o',p:'media',s:'Abierto'},
+     {t:'MNT-003',a:'3D &middot; Centro',cat:'Plomer&iacute;a',d:'Inundaci&oacute;n cuarto lavado',p:'alta',s:'Resuelto'},
+     {t:'MNT-004',a:'7B &middot; Pinos',cat:'El&eacute;ctrico',d:'Cortocircuito toma sala',p:'alta',s:'Abierto'}]
+  .map(r=>`<tr><td style="font-size:10px;color:var(--muted)">${r.t}</td><td style="font-weight:500">${r.a}</td><td class="muted">${r.cat}</td><td>${r.d}</td>
+    <td><span style="color:${r.p==='alta'?'var(--danger)':r.p==='media'?'var(--warn)':'var(--muted)'};font-size:11px;font-weight:600">&#9679; ${r.p.charAt(0).toUpperCase()+r.p.slice(1)}</span></td>
+    <td><span class="badge ${r.s==='Resuelto'?'ok':r.s==='En progreso'?'proc':'pend'}">${r.s}</span></td>
+  </tr>`).join('')}
+  </tbody></table></div></div>`;
+}
+
+// ============ REPORTES ============
+function renderReportes(el){
+  el.innerHTML=`
+  <div class="kpi-row">
+    <div class="kc gold"><div class="kc-lbl">Ingresos del mes</div><div class="kc-val gold">RD$ 1,240,000</div><div class="kc-sub">189 pagos recibidos</div><div class="kc-trend up">&#8593; 8.2% vs marzo</div></div>
+    <div class="kc green"><div class="kc-lbl">Tasa de cobro</div><div class="kc-val green">94.5%</div><div class="kc-sub">178 / 189 unidades</div></div>
+    <div class="kc red"><div class="kc-lbl">Mora total</div><div class="kc-val red">RD$ 342,500</div><div class="kc-sub">11 inquilinos</div></div>
+    <div class="kc warn"><div class="kc-lbl">Proyectado mayo</div><div class="kc-val warn">RD$ 1,310,000</div><div class="kc-sub">+5.6% proyectado</div></div>
+  </div>
+  <div class="tabs">
+    <div class="tab on" onclick="rTab('resumen',this)">Resumen</div>
+    <div class="tab" onclick="rTab('mora',this)">Mora</div>
+    <div class="tab" onclick="rTab('proyeccion',this)">Proyecci&oacute;n</div>
+    <div class="tab" onclick="rTab('enviar',this)">&#9993; Enviar reporte</div>
+  </div>
+  <div class="tv on" id="rtv-resumen">
+    <div class="g3">
+      <div class="panel"><div class="ph"><div class="ph-title">Ingresos 6 meses</div></div><div class="pb"><div class="chart-bars" id="rep-chart" style="height:110px"></div></div></div>
+      <div class="panel"><div class="ph"><div class="ph-title">Distribuci&oacute;n cobro</div></div><div class="pb"><div class="donut-wrap">
+        <svg width="90" height="90" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="var(--navy3)" stroke-width="14"/><circle cx="50" cy="50" r="38" fill="none" stroke="var(--olive)" stroke-width="14" stroke-dasharray="225 239" stroke-dashoffset="60" stroke-linecap="round"/><circle cx="50" cy="50" r="38" fill="none" stroke="var(--danger)" stroke-width="14" stroke-dasharray="43 239" stroke-dashoffset="-193" stroke-linecap="round"/><text x="50" y="47" text-anchor="middle" fill="var(--white)" font-size="13" font-weight="700" font-family="'Playfair Display',serif">94.5%</text><text x="50" y="58" text-anchor="middle" fill="var(--muted)" font-size="8">cobrado</text></svg>
+        <div class="donut-legend"><div class="dl-item"><div class="dl-dot" style="background:var(--olive)"></div><div class="dl-nm">Al d&iacute;a</div><div class="dl-v">178</div><span class="dl-p">94.2%</span></div><div class="dl-item"><div class="dl-dot" style="background:var(--danger)"></div><div class="dl-nm">En mora</div><div class="dl-v">11</div><span class="dl-p">5.8%</span></div></div>
+      </div></div></div>
+    </div>
+    <div class="panel"><div class="ph"><div class="ph-title">Por edificio</div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Edificio</th><th>Unidades</th><th>Cobrado</th><th>Mora</th><th>% Cobro</th><th>Estado</th></tr></thead><tbody>
+    <tr><td style="font-weight:500">Los Pinos</td><td class="muted">68</td><td class="gold">RD$ 432,000</td><td class="red">RD$ 96,000</td><td class="green">95.7%</td><td><span class="badge ok">Bueno</span></td></tr>
+    <tr><td style="font-weight:500">Edificio Palma</td><td class="muted">72</td><td class="gold">RD$ 418,500</td><td class="red">RD$ 142,500</td><td class="muted">93.0%</td><td><span class="badge warn">Regular</span></td></tr>
+    <tr><td style="font-weight:500">Edificio Centro</td><td class="muted">60</td><td class="gold">RD$ 389,500</td><td class="red">RD$ 104,000</td><td class="muted">93.4%</td><td><span class="badge warn">Regular</span></td></tr>
+    <tr style="border-top:1px solid var(--border2)"><td style="font-weight:700;color:var(--gold)">Total</td><td class="muted">200</td><td class="gold" style="font-weight:700">RD$ 1,240,000</td><td class="red" style="font-weight:700">RD$ 342,500</td><td class="green" style="font-weight:700">94.5%</td><td><span class="badge ok">Bueno</span></td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="tv" id="rtv-mora">
+    <div class="panel"><div class="ph"><div class="ph-title">Inquilinos en mora</div><button class="btn btn-wa btn-sm" onclick="toast('WhatsApp masivo enviado a 11 inquilinos')">&#128242; Notificar todos</button></div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Inquilino</th><th>Apt.</th><th>D&iacute;as</th><th>Monto</th><th>Acci&oacute;n</th></tr></thead><tbody>
+    ${TENANTS.filter(t=>t.status==='red').map(t=>`<tr>
+      <td style="cursor:pointer;color:var(--gold);font-weight:500" onclick="openProfile(${t.id})">${t.name}</td>
+      <td class="muted">Apto ${t.apt}</td>
+      <td><span style="background:var(--red-bg);color:var(--danger);border:1px solid var(--red-bd);padding:2px 7px;border-radius:9px;font-size:10px;font-weight:700">${t.daysLate} d&iacute;as</span></td>
+      <td style="color:var(--danger);font-weight:600">RD$ ${t.saldo.toLocaleString()}</td>
+      <td><button class="btn btn-wa btn-sm" onclick="toast('WA enviado a ${t.short}')">&#128242;</button></td>
+    </tr>`).join('')}
+    </tbody></table></div></div>
+  </div>
+  <div class="tv" id="rtv-proyeccion">
+    <div class="panel"><div class="ph"><div class="ph-title">Proyecci&oacute;n 6 meses</div><span class="ph-sub">Real vs Proyectado</span></div><div class="pb">
+    ${[{m:'Ene',v:1120000,r:true},{m:'Feb',v:1080000,r:true},{m:'Mar',v:1150000,r:true},{m:'Abr',v:1240000,r:true},{m:'May',v:1310000,r:false},{m:'Jun',v:1360000,r:false}].map(p=>{var pct=Math.round((p.v/1360000)*100);return `<div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid rgba(201,168,76,.05)">
+      <div style="width:60px;font-size:12px;font-weight:500;color:var(--white)">${p.m} 2025</div>
+      <div style="flex:1;height:8px;background:var(--navy3);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${p.r?'var(--gold)':'rgba(201,168,76,.4)'};border-radius:4px"></div></div>
+      <div style="width:90px;text-align:right;font-size:12px;font-weight:600;color:${p.r?'var(--white)':'var(--muted)'}">RD$ ${Math.round(p.v/1000)}K</div>
+      <span style="font-size:10px;padding:1px 7px;border-radius:8px;font-weight:600;${p.r?'background:var(--olive-bg);color:var(--olive)':'background:rgba(201,168,76,.1);color:var(--gold)'}">${p.r?'Real':'Proyect.'}</span>
+    </div>`;}).join('')}
+    </div></div>
+  </div>
+  <div class="tv" id="rtv-enviar">
+    <div class="panel"><div class="ph"><div class="ph-title">Enviar reporte</div></div><div class="pb">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:9px">Tipo de reporte</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px" id="rtype-row">
+        <div class="fbtn on" onclick="selRType(this,'Resumen ejecutivo')">Resumen ejecutivo</div>
+        <div class="fbtn" onclick="selRType(this,'Reporte completo')">Reporte completo</div>
+        <div class="fbtn" onclick="selRType(this,'Solo mora')">Solo mora</div>
+        <div class="fbtn" onclick="selRType(this,'Por edificio')">Por edificio</div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:9px">Canal de env&iacute;o</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px">
+        ${[{id:'wa',icon:'&#128242;',name:'WhatsApp',c:'#25D366'},{id:'gm',icon:'&#9993;&#65039;',name:'Gmail',c:'#EA4335'},{id:'yt',icon:'&#9654;&#65039;',name:'YouTube',c:'#FF0000'},{id:'ig',icon:'&#128248;',name:'Instagram',c:'#E1306C'}].map(ch=>`
+        <div class="panel" id="ch-${ch.id}" style="margin:0;cursor:pointer;border-color:${ch.id==='wa'?'var(--border2)':'var(--border)'};" onclick="selCh('${ch.id}')">
+          <div class="pb" style="padding:12px;text-align:center">
+            <div style="font-size:22px;margin-bottom:5px">${ch.icon}</div>
+            <div style="font-size:11px;font-weight:600;color:${ch.c}">${ch.name}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div id="ch-wa-f">
+        <div class="field" style="margin-bottom:9px"><label>N&uacute;mero de WhatsApp</label><input type="tel" id="wa-num" placeholder="+1 809 000 0000" oninput="updateSendPrev()"></div>
+        <div class="field" style="margin-bottom:9px"><label>Nota adicional</label><input type="text" id="wa-note" placeholder="Opcional..."></div>
+      </div>
+      <div id="ch-gm-f" style="display:none">
+        <div class="field" style="margin-bottom:9px"><label>Correo Gmail</label><input type="email" id="gm-email" placeholder="ejemplo@gmail.com" oninput="updateSendPrev()"></div>
+        <div class="field" style="margin-bottom:9px"><label>Asunto</label><input type="text" id="gm-subj" value="Reporte financiero &mdash; Abril 2025"></div>
+      </div>
+      <div id="ch-yt-f" style="display:none">
+        <div class="field" style="margin-bottom:9px"><label>Canal de YouTube</label><input type="text" id="yt-ch" placeholder="@TuCanal o URL" oninput="updateSendPrev()"></div>
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-size:11px;color:var(--muted);margin-bottom:9px">Se generar&aacute; un resumen en video del reporte para tu canal.</div>
+      </div>
+      <div id="ch-ig-f" style="display:none">
+        <div class="field" style="margin-bottom:9px"><label>Usuario de Instagram</label><input type="text" id="ig-user" placeholder="@tuusuario" oninput="updateSendPrev()"></div>
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-size:11px;color:var(--muted);margin-bottom:9px">Se generar&aacute; una infograf&iacute;a del reporte para tu feed o historia.</div>
+      </div>
+      <div id="send-prev" style="display:none;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:8px;padding:11px 14px;margin-bottom:12px">
+        <div style="font-size:10px;color:var(--gold);font-weight:700;margin-bottom:5px;letter-spacing:.06em">VISTA PREVIA DEL ENV&Iacute;O</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7" id="send-prev-txt"></div>
+      </div>
+      <div style="display:flex;gap:9px;justify-content:flex-end">
+        <button class="btn btn-out" onclick="toast('Exportando PDF...')">&#8595; Exportar PDF</button>
+        <button class="btn btn-gold" onclick="doSendReport()">Enviar reporte</button>
+      </div>
+    </div></div>
+  </div>`;
+  setTimeout(()=>buildBarChart('rep-chart',['Nov','Dic','Ene','Feb','Mar','Abr'],[980,1050,1120,1080,1150,1240],null),50);
+}
+function rTab(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('[id^="rtv-"]').forEach(v=>v.classList.remove('on'));el.classList.add('on');document.getElementById('rtv-'+id).classList.add('on');}
+
+var activeRType='Resumen ejecutivo', activeCh='wa';
+function selRType(el,t){document.querySelectorAll('#rtype-row .fbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');activeRType=t;updateSendPrev();}
+function selCh(ch){
+  activeCh=ch;
+  ['wa','gm','yt','ig'].forEach(c=>{
+    var card=document.getElementById('ch-'+c),f=document.getElementById('ch-'+c+'-f');
+    if(card)card.style.borderColor=c===ch?'var(--border2)':'var(--border)';
+    if(f)f.style.display=c===ch?'block':'none';
+  });
+  updateSendPrev();
+}
+function updateSendPrev(){
+  var destMap={wa:document.getElementById('wa-num')?document.getElementById('wa-num').value:'',gm:document.getElementById('gm-email')?document.getElementById('gm-email').value:'',yt:document.getElementById('yt-ch')?document.getElementById('yt-ch').value:'',ig:document.getElementById('ig-user')?document.getElementById('ig-user').value:''};
+  var dest=destMap[activeCh]; var names={wa:'WhatsApp',gm:'Gmail',yt:'YouTube',ig:'Instagram'};
+  var prev=document.getElementById('send-prev'),txt=document.getElementById('send-prev-txt');
+  if(prev&&txt){prev.style.display=dest?'block':'none';if(dest)txt.innerHTML='Canal: <b style="color:var(--white)">'+names[activeCh]+'</b><br>Destino: <b style="color:var(--white)">'+dest+'</b><br>Reporte: <b style="color:var(--white)">'+activeRType+'</b><br>Per&iacute;odo: <b style="color:var(--white)">Abril 2025</b>';}
+}
+function doSendReport(){toast('Reporte enviado exitosamente &#10003;');}
+
+// ============ WHATSAPP ============
+var CONVS=[
+  {tid:0,msgs:[{d:'in',t:'Buenas tardes, quiero saber cu&aacute;nto debo de la renta',time:'3:14 PM',ai:false},{d:'out',t:'Buenas tardes Carlos &#128075; Seg&uacute;n su cuenta tiene *RD$ 48,000* pendientes con *38 d&iacute;as de atraso*. &iquest;Coordina su pago hoy?',time:'3:14 PM',ai:true},{d:'in',t:'Pagu&eacute; RD$ 760 la semana pasada, no recuerdo cu&aacute;nto me resta',time:'3:16 PM',ai:false},{d:'out',t:'Revisando su historial: el sistema *no registra ning&uacute;n pago de RD$ 760*. El saldo sigue siendo *RD$ 48,000*. Env&iacute;e el comprobante y lo verificamos. &#128206;',time:'3:16 PM',ai:true}],preview:'No recuerdo cu&aacute;nto me resta',time:'3:16 PM',unread:1},
+  {tid:1,msgs:[{d:'in',t:'&iquest;Mi pago fue recibido?',time:'10:02 AM',ai:false},{d:'out',t:'Hola Mar&iacute;a &#128522; S&iacute;, su pago de *RD$ 28,000* fue confirmado hoy. &iexcl;Gracias! &#10003;',time:'10:02 AM',ai:true}],preview:'&iquest;Mi pago fue recibido?',time:'10:02 AM',unread:0},
+  {tid:2,msgs:[{d:'in',t:'&iquest;Cu&aacute;nto es la electricidad?',time:'Ayer',ai:false},{d:'out',t:'Hola Luis &#128075; Su electricidad de abril es *RD$ 2,100*, vence el *5 de mayo*. Puede pagar desde el portal web. &#128187;',time:'Ayer',ai:true}],preview:'&iquest;Cu&aacute;nto es la electricidad?',time:'Ayer',unread:1},
+  {tid:3,msgs:[{d:'in',t:'Tengo una sugerencia para el &aacute;rea com&uacute;n',time:'9:00 AM',ai:false},{d:'out',t:'Buenos d&iacute;as Rosa. Las sugerencias son revisadas por el administrador. Le responder&aacute;n en menos de 24 horas. &#128591;',time:'9:00 AM',ai:false}],preview:'Tengo una sugerencia',time:'9:00 AM',unread:1},
+];
+var activeConv=0, waMode='preguntas';
+
+function renderWhatsApp(el){
+  el.innerHTML=`
+  <div class="kpi-row">
+    <div class="kc" style="border-color:rgba(37,211,102,.2)"><div class="kc-lbl">Mensajes hoy</div><div class="kc-val" style="color:var(--wa)">47</div><div class="kc-sub">38 respondidos por IA</div></div>
+    <div class="kc green"><div class="kc-lbl">Resoluci&oacute;n IA</div><div class="kc-val green">94%</div><div class="kc-sub">Sin intervenci&oacute;n humana</div></div>
+    <div class="kc gold"><div class="kc-lbl">Chats activos</div><div class="kc-val gold">4</div><div class="kc-sub">En este momento</div></div>
+    <div class="kc red"><div class="kc-lbl">Sugerencias</div><div class="kc-val red">5</div><div class="kc-sub">Requieren revisi&oacute;n</div></div>
+  </div>
+  <div style="background:rgba(11,22,40,.8);border:1px solid rgba(37,211,102,.2);border-radius:9px;padding:9px 14px;margin-bottom:13px;display:flex;align-items:center;gap:9px;font-size:12px">
+    <div style="width:8px;height:8px;background:var(--wa);border-radius:50%;animation:apulse 2s infinite"></div>
+    <span style="color:var(--wa);font-weight:600">Agente IA activo</span>
+    <span style="color:var(--muted)">Admin: +1 809-356-4915 &middot; Secundario: +1 929-257-5851</span>
+    <span style="margin-left:auto;color:var(--muted)">24/7 autom&aacute;tico</span>
+  </div>
+  <div class="chat-layout">
+    <div class="conv-list">
+      <div style="padding:8px 10px;border-bottom:1px solid var(--border)"><input type="text" placeholder="Buscar..." style="width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--white);font-size:11px;font-family:var(--fb);outline:none"></div>
+      <div class="conv-items" id="wa-conv-list"></div>
+    </div>
+    <div class="chat-win">
+      <div class="chat-hdr">
+        <div class="conv-av" id="wa-av">CM</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--white)" id="wa-name">Carlos M&eacute;ndez</div><div style="font-size:10px;color:var(--muted)" id="wa-apt">Apto 4B &middot; Los Pinos</div></div>
+        <div style="font-size:10px;color:var(--wa);display:flex;align-items:center;gap:3px"><span style="width:5px;height:5px;background:var(--wa);border-radius:50%;display:inline-block"></span>En l&iacute;nea</div>
+        <div style="background:var(--wa-bg);border:1px solid rgba(37,211,102,.25);color:var(--wa);font-size:10px;padding:3px 8px;border-radius:10px;font-weight:600;margin-left:8px">&#129302; IA Activa</div>
+      </div>
+      <div class="chat-msgs" id="wa-msgs"></div>
+      <div class="chat-input">
+        <div class="mode-btns">
+          <div class="mode-btn wam on" id="wa-btn-preg" onclick="waSetMode('preguntas')">&#128172; Preguntas (Automatizado)</div>
+          <div class="mode-btn sugm" id="wa-btn-sug" onclick="waSetMode('sugerencias')">&#128221; Sugerencias (Manual)</div>
+        </div>
+        <div class="chat-row">
+          <textarea class="chat-ta" id="wa-input" placeholder="Simula pregunta del inquilino &mdash; IA responde..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();waSend()}"></textarea>
+          <button class="chat-send" id="wa-send" onclick="waSend()">&#10148;</button>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px" id="wa-hint">&#129302; IA responde autom&aacute;ticamente consultando la base de datos del inquilino.</div>
+      </div>
+    </div>
+  </div>`;
+  renderWAList(); waLoadConv(0);
+}
+function renderWAList(){
+  var el=document.getElementById('wa-conv-list'); if(!el) return; el.innerHTML='';
+  CONVS.forEach((c,i)=>{
+    var t=TENANTS[c.tid]; var d=document.createElement('div'); d.className='conv-item'+(i===activeConv?' on':'');
+    d.innerHTML=`<div class="conv-av">${t.initials}</div><div style="flex:1;min-width:0"><div class="conv-nm">${t.name}</div><div class="conv-prev">${c.preview}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><div style="font-size:10px;color:var(--muted)">${c.time}</div>${c.unread?`<div class="conv-unread">${c.unread}</div>`:''}</div>`;
+    d.onclick=()=>{activeConv=i;renderWAList();waLoadConv(i);};
+    el.appendChild(d);
+  });
+}
+function waLoadConv(i){
+  var c=CONVS[i],t=TENANTS[c.tid];
+  var av=document.getElementById('wa-av'),nm=document.getElementById('wa-name'),ap=document.getElementById('wa-apt');
+  if(av)av.textContent=t.initials; if(nm)nm.innerHTML=t.name; if(ap)ap.innerHTML='Apto '+t.apt+' &middot; '+t.edif+' &middot; '+t.tel;
+  c.unread=0; renderWAList();
+  var msgs=document.getElementById('wa-msgs'); if(!msgs) return; msgs.innerHTML='';
+  c.msgs.forEach(m=>waAppendMsg(m.d,m.t,m.time,m.ai)); msgs.scrollTop=msgs.scrollHeight;
+}
+function waAppendMsg(dir,text,time,ai){
+  var msgs=document.getElementById('wa-msgs'); if(!msgs) return;
+  var d=document.createElement('div'); d.className='msg '+dir+(ai?' ai':'');
+  d.innerHTML=(ai?'<div class="ai-lbl">&#129302; IA</div>':'')
+    +`<div class="msg-bub">${text.replace(/\*(.*?)\*/g,'<strong>$1</strong>')}</div><div class="msg-time">${time}</div>`;
+  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+}
+function waSetMode(m){
+  waMode=m;
+  document.getElementById('wa-btn-preg').classList.toggle('on',m==='preguntas');
+  document.getElementById('wa-btn-sug').classList.toggle('on',m==='sugerencias');
+  var send=document.getElementById('wa-send'); if(send)send.className='chat-send'+(m==='sugerencias'?' sug-s':'');
+  var inp=document.getElementById('wa-input'); if(inp)inp.placeholder=m==='preguntas'?'Simula pregunta del inquilino &mdash; IA responde...':'Escribe tu respuesta manual...';
+  var hint=document.getElementById('wa-hint'); if(hint)hint.innerHTML=m==='preguntas'?'&#129302; IA responde autom&aacute;ticamente consultando la base de datos.':'&#128221; Respuesta manual &mdash; No automatizado.';
+}
+function waSend(){
+  var inp=document.getElementById('wa-input'); if(!inp) return;
+  var text=inp.value.trim(); if(!text) return;
+  var now=new Date().toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'});
+  var c=CONVS[activeConv],t=TENANTS[c.tid];
+  if(waMode==='preguntas'){
+    waAppendMsg('in',text,now,false); c.msgs.push({d:'in',t:text,time:now,ai:false}); inp.value='';
+    setTimeout(()=>{var reply=aiReply(text,t);waAppendMsg('out',reply,now,true);c.msgs.push({d:'out',t:reply,time:now,ai:true});c.preview=reply.substring(0,40)+'...';c.time=now;renderWAList();},900);
+  } else {
+    waAppendMsg('out',text,now,false); c.msgs.push({d:'out',t:text,time:now,ai:false}); inp.value=''; c.preview=text.substring(0,40); c.time=now; renderWAList();
+    toast('Respuesta manual enviada a '+t.short);
+  }
+}
+
+// ============ ADMIN MODE ============
+function toggleAdmin(){
+  adminMode=!adminMode;
+  document.body.classList.toggle('admin-mode',adminMode);
+  document.getElementById('admin-bar').classList.toggle('on',adminMode);
+  document.getElementById('save-bar').classList.toggle('on',adminMode);
+  document.querySelectorAll('.ed,[contenteditable]').forEach(el=>el.contentEditable=adminMode?'true':'false');
+  var ppbar=document.getElementById('pp-save-bar'); if(ppbar)ppbar.style.display=adminMode?'flex':'none';
+}
+function saveAdmin(){
+  adminMode=false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('admin-bar').classList.remove('on');
+  document.getElementById('save-bar').classList.remove('on');
+  document.querySelectorAll('.ed,[contenteditable]').forEach(el=>el.contentEditable='false');
+  var ppbar=document.getElementById('pp-save-bar'); if(ppbar)ppbar.style.display='none';
+  toast('Cambios guardados correctamente');
+}
+function cancelAdmin(){adminMode=false;document.body.classList.remove('admin-mode');document.getElementById('admin-bar').classList.remove('on');document.getElementById('save-bar').classList.remove('on');document.querySelectorAll('.ed,[contenteditable]').forEach(el=>el.contentEditable='false');}
+
+// KEYBOARD
+document.addEventListener('keydown',function(e){
+  if(e.ctrlKey&&e.altKey){
+    if(e.key==='e'||e.key==='E'){e.preventDefault();toggleAdmin();}
+    if(e.key==='m'||e.key==='M'){e.preventDefault();goPage('inventario');}
+    if(e.key==='r'||e.key==='R'){e.preventDefault();goPage('reportes');}
+    if(e.key==='w'||e.key==='W'){e.preventDefault();goPage('whatsapp');}
+  }
+  if(e.ctrlKey&&e.key==='s'&&adminMode){e.preventDefault();saveAdmin();}
+  if(e.key==='Escape'){closeProfile();closePayModal();closeReceipt();}
+});
+
+// PAYMENT
+function closePayModal(){document.getElementById('pay-modal').classList.remove('open');}
+function setPM(el,m){document.querySelectorAll('.pm').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('card-f').style.display=m==='card'?'block':'none';document.getElementById('transfer-f').style.display=m==='transfer'?'block':'none';document.getElementById('cash-f').style.display=m==='cash'?'block':'none';}
+function processPayment(){closePayModal();var now=new Date().toLocaleString('es-DO',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});document.getElementById('rc-dt').textContent=now;document.getElementById('receipt-view').classList.add('open');}
+function closeReceipt(){document.getElementById('receipt-view').classList.remove('open');}
+function showReceipt(name,apt,amount,bank,concept,date){document.getElementById('rc-name').textContent=name;document.getElementById('rc-apt').textContent=apt;document.getElementById('rc-amount').textContent=amount;document.getElementById('rc-method').textContent=bank;document.getElementById('rc-concept').textContent=concept;document.getElementById('rc-dt').textContent=date;document.getElementById('rc-ref').textContent='REF: TRF-'+Math.floor(4800+Math.random()*199);document.getElementById('receipt-view').classList.add('open');}
+function topbarAction(){var acts={dashboard:()=>toast('Nuevo pago...'),inquilinos:()=>toast('Nuevo inquilino...'),cobros:()=>cTab&&toast('Registrar pago...'),inventario:()=>toast('Nueva unidad...'),reportes:()=>toast('Exportando...'),whatsapp:()=>toast('Notificaci&oacute;n masiva enviada'),mantenimiento:()=>toast('Nuevo ticket creado')};if(acts[currentPage])acts[currentPage]();}
+
+// INIT
+goPage('dashboard');
+</script>
+</body>
+</html>
