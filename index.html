@@ -114,7 +114,7 @@ html,body{height:100%;font-family:var(--fb);background:var(--navy);color:var(--w
     <div style="text-align:center;margin-bottom:20px">
       <div style="width:50px;height:50px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px">🔐</div>
       <div style="font-family:'Playfair Display',serif;font-size:18px;color:#F8F6F2;margin-bottom:4px">Acceso Rápido</div>
-      <div style="font-size:12px;color:#8896A8;line-height:1.6">Ingresa la combinación de teclas de acceso<br>o escribe tu clave en el campo de abajo</div>
+      <div style="font-size:12px;color:#8896A8;line-height:1.6">Ingresa tu clave de acceso para continuar</div>
     </div>
     <div style="font-size:10px;color:#8896A8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-weight:500">Clave de acceso</div>
     <input id="access-input" type="password" placeholder="Escribe tu clave..."
@@ -124,9 +124,7 @@ html,body{height:100%;font-family:var(--fb);background:var(--navy);color:var(--w
     <div id="access-err" style="display:none;background:rgba(224,85,85,.1);border:1px solid rgba(224,85,85,.3);border-radius:7px;padding:7px 11px;font-size:11px;color:#E05555;text-align:center;margin-bottom:10px">
       Clave incorrecta. Intenta de nuevo.
     </div>
-    <div style="font-size:10px;color:#8896A8;text-align:center;margin-bottom:14px">
-      También puedes presionar <span style="background:#1a3158;border:1px solid rgba(201,168,76,.3);border-radius:4px;padding:1px 7px;font-family:monospace;color:#C9A84C;font-size:10px">Ctrl+Alt+A</span> en cualquier momento
-    </div>
+    <div style="margin-bottom:14px"></div>
     <button onclick="checkAccess()" style="width:100%;background:#C9A84C;color:#0B1628;border:none;padding:12px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;margin-bottom:8px" onmouseover="this.style.background='#E8C47A'" onmouseout="this.style.background='#C9A84C'">Verificar acceso</button>
     <button onclick="closeAccesoModal()" style="width:100%;background:transparent;border:1px solid rgba(201,168,76,.15);color:#8896A8;padding:8px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s" onmouseover="this.style.borderColor='rgba(201,168,76,.3)';this.style.color='#F8F6F2'" onmouseout="this.style.borderColor='rgba(201,168,76,.15)';this.style.color='#8896A8'">Cancelar</button>
   </div>
@@ -196,8 +194,8 @@ function closeAccesoModal(){
   document.getElementById('access-err').style.display='none';
 }
 function checkAccess(){
-  var val=document.getElementById('access-input').value.trim().toLowerCase();
-  if(val==='admin'||val==='lacremapa'||val==='lacrema'||val==='mgpa'){
+  var val=document.getElementById('access-input').value.trim();
+  if(val==='LCMGPA01'){
     closeAccesoModal(); loadModule('admin');
   } else {
     document.getElementById('access-err').style.display='block';
@@ -206,9 +204,8 @@ function checkAccess(){
   }
 }
 
-// KEYBOARD — Ctrl+Alt+A acceso directo admin (sin clave)
+// KEYBOARD — solo Escape para cerrar modal
 document.addEventListener('keydown',function(e){
-  if(e.ctrlKey&&e.altKey&&(e.key==='a'||e.key==='A')){e.preventDefault();loadModule('admin');}
   if(e.key==='Escape'){closeAccesoModal();}
 });
 
