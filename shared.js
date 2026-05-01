@@ -107,7 +107,13 @@ function toast(msg, color) {
 // Format helpers
 function fmtCard(el) { var v = el.value.replace(/\D/g, '').slice(0, 16); el.value = v.replace(/(.{4})/g, '$1 ').trim(); }
 function fmtExp(el) { var v = el.value.replace(/\D/g, ''); if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2, 4); el.value = v; }
-function fmtCed(el) { var v = el.value.replace(/\D/g, ''); if (v.length > 3 && v.length <= 10) v = v.slice(0, 3) + '-' + v.slice(3); if (v.length > 11) v = v.slice(0, 11) + '-' + v.slice(11); el.value = v; }
+// Cédula dominicana: 000-0000000-0 (11 dígitos: 3+7+1)
+function fmtCed(el) {
+  var v = el.value.replace(/\D/g, '').slice(0, 11);
+  if (v.length <= 3) { el.value = v; return; }
+  if (v.length <= 10) { el.value = v.slice(0,3) + '-' + v.slice(3); return; }
+  el.value = v.slice(0,3) + '-' + v.slice(3,10) + '-' + v.slice(10);
+}
 
 // Chart builder
 function buildBarChart(id, labels, vals, colors) {
