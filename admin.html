@@ -1294,4 +1294,62 @@ function openPortalModal(){
   setTimeout(function(){document.getElementById('portal-key-input').focus();},100);
 }
 function closePortalModal(){
-  documen
+  document.getElementById('portal-modal').style.display='none';
+}
+function portalGo(section){
+  closePortalModal();
+  goPage(section);
+}
+function capturePortalKey(e){
+  if(!e.ctrlKey&&!e.altKey) return;
+  e.preventDefault();
+  var key=e.key.toUpperCase();
+  var display=document.getElementById('portal-key-display');
+  var err=document.getElementById('portal-err');
+  err.style.display='none';
+  var combo='Ctrl+Alt+'+key;
+  display.textContent='Detectado: '+combo;
+  var map={'D':'dashboard','X':'inquilinos','C':'cobros','I':'inventario','M':'mantenimiento','R':'reportes','A':'whatsapp','P':'editar'};
+  if(map[key]){
+    setTimeout(function(){
+      closePortalModal();
+      if(map[key]==='editar') toggleAdmin();
+      else goPage(map[key]);
+    },400);
+  } else {
+    display.textContent='';
+    err.style.display='block';
+    document.getElementById('portal-key-input').value='';
+  }
+}
+
+// KEYBOARD SHORTCUTS — todas las secciones
+document.addEventListener('keydown',function(e){
+  if(e.ctrlKey&&e.altKey){
+    var k=e.key.toUpperCase();
+    if(k==='D'){e.preventDefault();goPage('dashboard');}
+    if(k==='X'){e.preventDefault();goPage('inquilinos');}
+    if(k==='C'){e.preventDefault();goPage('cobros');}
+    if(k==='I'){e.preventDefault();goPage('inventario');}
+    if(k==='M'){e.preventDefault();goPage('mantenimiento');}
+    if(k==='R'){e.preventDefault();goPage('reportes');}
+    if(k==='A'){e.preventDefault();goPage('whatsapp');}
+    if(k==='P'){e.preventDefault();if(adminMode)saveAdmin();else openPinModal();}
+  }
+  if(e.ctrlKey&&e.key==='s'&&adminMode){e.preventDefault();saveAdmin();}
+  if(e.key==='Escape'){closeProfile();closePayModal();closeReceipt();closePortalModal();}
+});
+
+// PAYMENT
+function closePayModal(){document.getElementById('pay-modal').classList.remove('open');}
+function setPM(el,m){document.querySelectorAll('.pm').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('card-f').style.display=m==='card'?'block':'none';document.getElementById('transfer-f').style.display=m==='transfer'?'block':'none';document.getElementById('cash-f').style.display=m==='cash'?'block':'none';}
+function processPayment(){closePayModal();var now=new Date().toLocaleString('es-DO',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});document.getElementById('rc-dt').textContent=now;document.getElementById('receipt-view').classList.add('open');}
+function closeReceipt(){document.getElementById('receipt-view').classList.remove('open');}
+function showReceipt(name,apt,amount,bank,concept,date){document.getElementById('rc-name').textContent=name;document.getElementById('rc-apt').textContent=apt;document.getElementById('rc-amount').textContent=amount;document.getElementById('rc-method').textContent=bank;document.getElementById('rc-concept').textContent=concept;document.getElementById('rc-dt').textContent=date;document.getElementById('rc-ref').textContent='REF: TRF-'+Math.floor(4800+Math.random()*199);document.getElementById('receipt-view').classList.add('open');}
+function topbarAction(){var acts={dashboard:()=>toast('Nuevo pago...'),inquilinos:()=>toast('Nuevo inquilino...'),cobros:()=>cTab&&toast('Registrar pago...'),inventario:()=>toast('Nueva unidad...'),reportes:()=>toast('Exportando...'),whatsapp:()=>toast('Notificaci&oacute;n masiva enviada'),mantenimiento:()=>toast('Nuevo ticket creado')};if(acts[currentPage])acts[currentPage]();}
+
+// INIT
+goPage('dashboard');
+</script>
+</body>
+</html>
