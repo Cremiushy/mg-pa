@@ -836,16 +836,105 @@ function toggleAdmin(){
   document.querySelectorAll('.ed,[contenteditable]').forEach(el=>el.contentEditable=adminMode?'true':'false');
   var ppbar=document.getElementById('pp-save-bar'); if(ppbar)ppbar.style.display=adminMode?'flex':'none';
 }
+
 function saveAdmin(){
+  // Si hay un perfil abierto, leer y guardar todos los campos editados
+  if(currentTenant){
+    var map={
+      name:   'pp-nombre',
+      cedula: 'pp-cedula',
+      tel:    'pp-tel',
+      email:  'pp-email',
+      inicio: 'pp-ini',
+      vence:  'pp-vence',
+      contrato:'pp-cont',
+      deposito:'pp-dep'
+    };
+    Object.keys(map).forEach(function(key){
+      var el=document.getElementById(map[key]);
+      if(el){
+        var val=(el.textContent||el.innerText||'').trim();
+        if(val) currentTenant[key]=val;
+      }
+    });
+    // Renta — extraer número
+    var rentaEl=document.getElementById('pp-renta');
+    if(rentaEl){
+      var rentaVal=(rentaEl.textContent||'').replace(/\D/g,'');
+      if(rentaVal) currentTenant.renta=parseInt(rentaVal);
+    }
+    // Apartamento — separar apt y edif si cambió
+    var aptEl=document.getElementById('pp-apt');
+    if(aptEl){
+      var aptTxt=(aptEl.textContent||'').replace('Apto','').trim();
+      var parts=aptTxt.split('·');
+      if(parts[0]) currentTenant.apt=parts[0].trim();
+      if(parts[1]) currentTenant.edif=parts[1].trim();
+    }
+    // Actualizar initials y short
+    if(currentTenant.name){
+      var words=currentTenant.name.trim().split(' ');
+      currentTenant.short=words[0];
+      currentTenant.initials=(words[0]?words[0][0]:'')+(words[1]?words[1][0]:'');
+    }
+    // Persistir en localStorage
+    saveTenants();
+    // Refrescar tarjetas si estamos en esa sección
+    if(currentPage==='inquilinos') renderTenantCards(TENANTS);
+  }
+
+  // También guardar cualquier campo .ed editable en tablas
+  document.querySelectorAll('.ed[contenteditable="true"]').forEach(function(el){
+    el.contentEditable='false';
+  });
+
   adminMode=false;
   document.body.classList.remove('admin-mode');
   document.getElementById('admin-bar').classList.remove('on');
   document.getElementById('save-bar').classList.remove('on');
-  document.querySelectorAll('.ed,[contenteditable]').forEach(el=>el.contentEditable='false');
+  document.querySelectorAll('.ed,[contenteditable]').forEach(function(el){el.contentEditable='false';});
   var ppbar=document.getElementById('pp-save-bar'); if(ppbar)ppbar.style.display='none';
-  toast('Cambios guardados correctamente');
+  toast('Cambios guardados correctamente ✓');
 }
-function cancelAdmin(){adminMode=false;document.body.classList.remove('admin-mode');document.getElementById('admin-bar').classList.remove('on');document.getElementById('save-bar').classList.remove('on');document.querySelectorAll('.ed,[contenteditable]').forEach(el=>el.contentEditable='false');}
+
+function cancelAdmin(){
+  adminMode=false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('admin-bar').classList.remove('on');
+  document.getElementById('save-bar').classList.remove('on');
+  document.querySelectorAll('.ed,[contenteditable]').forEach(function(el){el.contentEditable='false';});
+  var ppbar=document.getElementById('pp-save-bar'); if(ppbar)ppbar.style.display='none';
+  // Recargar perfil con datos originales
+  if(currentTenant) openProfile(currentTenant.id);
+}
+
+// Guardar TENANTS en localStorage
+function saveTenants(){
+  try{
+    localStorage.setItem('mgpa_tenants', JSON.stringify(TENANTS));
+  }catch(e){}
+}
+
+// Cargar TENANTS desde localStorage al iniciar
+function loadTenants(){
+  try{
+    var saved=localStorage.getItem('mgpa_tenants');
+    if(saved){
+      var parsed=JSON.parse(saved);
+      // Merge: respetar estructura, solo sobreescribir campos editables
+      parsed.forEach(function(saved,i){
+        if(TENANTS[i]){
+          ['name','short','initials','apt','edif','cedula','tel','email','inicio','vence','contrato','deposito','renta'].forEach(function(k){
+            if(saved[k]!==undefined) TENANTS[i][k]=saved[k];
+          });
+        }
+      });
+    }
+  }catch(e){}
+}
+
+// Llamar al inicio
+loadTenants();
 
 // PORTAL ADMINISTRATIVO MODAL
 function openPortalModal(){
