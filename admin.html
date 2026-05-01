@@ -6,6 +6,7 @@
 <title>MG-PA | Portal Administrativo</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%230B1628'/><text font-size='32' font-family='Georgia,serif' fill='%23C9A84C' x='10' y='52'>MG</text><text font-size='20' font-family='Georgia,serif' fill='%23C9A84C' x='16' y='76'>PA</text></svg>">
 <link rel="stylesheet" href="shared.css">
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -617,89 +618,81 @@ function abrirTicketModal(d){
   var modal = document.getElementById('ticket-modal');
 
   document.getElementById('ticket-body').innerHTML =
-    '<div id="ticket-print" style="background:#fff;color:#0B1628;width:100%;max-width:420px;margin:0 auto;font-family:\'DM Sans\',sans-serif;">'
+    '<div id="ticket-print" style="background:#f5efe0;color:#0B1628;width:100%;max-width:420px;margin:0 auto;font-family:\'DM Sans\',sans-serif;background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(180,150,80,0.08) 28px);border:1px solid #c8a96e;">'
 
-    // HEADER
-    + '<div style="background:#0B1628;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">'
-      + '<div>'
-        + '<div style="font-family:\'Playfair Display\',serif;font-size:16px;color:#C9A84C;font-weight:700">La Crema Propiedades</div>'
-        + '<div style="font-size:9px;color:#8896A8;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Orden de Servicio Oficial</div>'
-      + '</div>'
-      + '<div>' + qrSvg + '</div>'
+    // ENCABEZADO GÓTICO
+    + '<div style="background:#0B1628;padding:18px 18px 14px;text-align:center;border-bottom:3px solid #C9A84C;position:relative">'
+      + '<div style="font-family:\'UnifrakturMaguntia\',\'MedievalSharp\',cursive;font-size:36px;color:#C9A84C;line-height:1.1;letter-spacing:.02em;text-shadow:0 1px 6px rgba(201,168,76,.3)">La Crema Propiedades</div>'
+      + '<div style="position:absolute;top:50%;right:16px;transform:translateY(-50%)">' + qrSvg + '</div>'
     + '</div>'
 
-    // GOLD BAR
+    // BARRA DORADA — número de orden y fecha
     + '<div style="background:#C9A84C;padding:5px 18px;display:flex;justify-content:space-between;align-items:center">'
       + '<span style="font-size:12px;font-weight:800;color:#0B1628;letter-spacing:.06em">' + d.numOrden + '</span>'
       + '<span style="font-size:10px;font-weight:600;color:#0B1628">' + d.fechaEmision + ' &nbsp;|&nbsp; ' + d.horaEmision + '</span>'
     + '</div>'
 
-    // BODY
-    + '<div style="padding:12px 16px">'
+    // BODY con fondo estilo pergamino
+    + '<div style="padding:14px 16px">'
 
-      // SECCIÓN 1: INQUILINO + ORDEN en dos columnas
-      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'
-
-        // Columna izquierda: Inquilino
-        + '<div style="background:#f7f5f1;border-left:3px solid #C9A84C;border-radius:0 6px 6px 0;padding:8px 10px">'
-          + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px">Inquilino</div>'
+      // SECCIÓN 1: INQUILINO + ORDEN
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
+        + '<div style="background:rgba(255,255,255,.7);border-left:3px solid #C9A84C;border-radius:0 6px 6px 0;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06)">'
+          + '<div style="font-size:9px;color:#8a6a2a;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px">Inquilino</div>'
           + '<div style="font-size:13px;font-weight:700;color:#0B1628;line-height:1.3">' + t.name + '</div>'
           + '<div style="font-size:10px;color:#555;margin-top:3px">Apto ' + t.apt + ' &middot; ' + t.edif + '</div>'
           + '<div style="font-size:10px;color:#555">CI: ' + t.cedula + '</div>'
           + '<div style="font-size:10px;color:#555">&#9990; ' + t.tel + '</div>'
         + '</div>'
-
-        // Columna derecha: Detalles de la orden
-        + '<div style="background:#f7f5f1;border-left:3px solid #0B1628;border-radius:0 6px 6px 0;padding:8px 10px">'
-          + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px">Orden</div>'
+        + '<div style="background:rgba(255,255,255,.7);border-left:3px solid #0B1628;border-radius:0 6px 6px 0;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06)">'
+          + '<div style="font-size:9px;color:#8a6a2a;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px">Orden</div>'
           + '<div style="font-size:11px;font-weight:700;color:#0B1628">' + d.tipo + '</div>'
           + '<div style="font-size:10px;color:#555;margin-top:3px">&#128197; Visita: <b>' + d.visitaFecha + '</b></div>'
           + '<div style="font-size:10px;color:#555">&#128179; Pago: ' + (d.pago||'No aplica') + '</div>'
-          + '<div style="font-size:10px;color:#555">&#128119; ' + (d.tecnico||'Por asignar') + ' &nbsp;#' + (d.badge||'—') + '</div>'
+          + '<div style="font-size:10px;color:#555">&#128119; ' + (d.tecnico||'Por asignar') + ' &nbsp;#' + (d.badge||'&mdash;') + '</div>'
         + '</div>'
       + '</div>'
 
-      // SECCIÓN 2: Descripción (compacta)
-      + '<div style="background:#f7f5f1;border-radius:6px;padding:7px 10px;margin-bottom:10px">'
-        + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:3px">Descripci&oacute;n del trabajo</div>'
-        + '<div style="font-size:11px;color:#333;line-height:1.4">' + d.texto + '</div>'
+      // SECCIÓN 2: Descripción
+      + '<div style="background:rgba(255,255,255,.7);border-radius:6px;padding:8px 10px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)">'
+        + '<div style="font-size:9px;color:#8a6a2a;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:4px">Descripci&oacute;n del trabajo</div>'
+        + '<div style="font-size:11px;color:#333;line-height:1.5">' + d.texto + '</div>'
       + '</div>'
 
-      // SECCIÓN 3: Proceso en línea horizontal
-      + '<div style="margin-bottom:10px">'
-        + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:6px">Proceso de la visita</div>'
-        + '<div style="display:flex;align-items:flex-start;gap:0">'
+      // SECCIÓN 3: Proceso horizontal
+      + '<div style="margin-bottom:16px">'
+        + '<div style="font-size:9px;color:#8a6a2a;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:8px">Proceso de la visita</div>'
+        + '<div style="display:flex;align-items:flex-start">'
         + ['Llegada','Inspecci&oacute;n','En proceso','Completado','Aprobaci&oacute;n','Cierre'].map(function(s,i,arr){
-            return '<div style="flex:1;text-align:center">'
-              + '<div style="width:22px;height:22px;border-radius:50%;background:#0B1628;border:2px solid #C9A84C;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#C9A84C;margin:0 auto 3px">'+(i+1)+'</div>'
-              + (i<arr.length-1?'<div style="height:2px;background:#ddd;position:relative;top:-13px;margin:0 -8px;z-index:0"></div>':'')
-              + '<div style="font-size:8px;color:#555;line-height:1.2;margin-top:2px">'+s+'</div>'
+            return '<div style="flex:1;text-align:center;position:relative">'
+              + (i<arr.length-1?'<div style="position:absolute;top:10px;left:50%;right:-50%;height:2px;background:#C9A84C;opacity:.4;z-index:0"></div>':'')
+              + '<div style="width:22px;height:22px;border-radius:50%;background:#0B1628;border:2px solid #C9A84C;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#C9A84C;margin:0 auto 4px;position:relative;z-index:1">'+(i+1)+'</div>'
+              + '<div style="font-size:8px;color:#555;line-height:1.2">'+s+'</div>'
             + '</div>';
           }).join('')
         + '</div>'
       + '</div>'
 
-      // SECCIÓN 4: Notas + QR en dos columnas
-      + '<div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start">'
-
-        // Notas del técnico
+      // SECCIÓN 4: Notas + QR
+      + '<div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;margin-bottom:16px">'
         + '<div>'
-          + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:4px">Notas del t&eacute;cnico</div>'
-          + '<textarea id="ticket-notas" placeholder="Observaciones, percances, detalles del pago..." style="width:100%;background:#f7f5f1;border:1px solid #ddd;border-radius:6px;padding:7px 9px;color:#333;font-size:11px;font-family:\'DM Sans\',sans-serif;resize:none;outline:none;height:64px;line-height:1.4"></textarea>'
+          + '<div style="font-size:9px;color:#8a6a2a;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:4px">Notas del t&eacute;cnico</div>'
+          + '<textarea id="ticket-notas" placeholder="Observaciones, percances, detalles del pago..." style="width:100%;background:rgba(255,255,255,.8);border:1px solid #c8a96e;border-radius:6px;padding:7px 9px;color:#333;font-size:11px;font-family:\'DM Sans\',sans-serif;resize:none;outline:none;height:64px;line-height:1.4"></textarea>'
         + '</div>'
-
-        // QR
         + '<div style="text-align:center">'
-          + '<div style="font-size:8px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">QR Ref.</div>'
+          + '<div style="font-size:8px;color:#8a6a2a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">QR Ref.</div>'
           + qrSvg
-          + '<div style="font-size:8px;color:#bbb;margin-top:3px;font-family:monospace">' + d.numOrden + '</div>'
+          + '<div style="font-size:8px;color:#aaa;margin-top:3px;font-family:monospace">' + d.numOrden + '</div>'
         + '</div>'
       + '</div>'
 
-      // FOOTER
-      + '<div style="border-top:1px dashed #ddd;margin-top:10px;padding-top:8px;display:flex;justify-content:space-between;align-items:center">'
-        + '<div style="font-size:9px;color:#aaa">La Crema Propiedades &copy; ' + new Date().getFullYear() + '</div>'
-        + '<div style="font-size:9px;color:#aaa">Ref: ' + d.qrData.substring(0,16) + '</div>'
+      // PIE DE PÁGINA
+      + '<div style="border-top:2px solid #C9A84C;padding-top:10px;text-align:center">'
+        + '<div style="font-family:\'Playfair Display\',serif;font-size:12px;color:#8a6a2a;font-style:italic;margin-bottom:4px">"Gracias por su paciencia y perdone los inconvenientes"</div>'
+        + '<div style="display:flex;justify-content:space-between;margin-top:6px">'
+          + '<div style="font-size:8px;color:#aaa">La Crema Propiedades &copy; ' + new Date().getFullYear() + '</div>'
+          + '<div style="font-size:8px;color:#aaa;font-family:monospace">Ref: ' + d.qrData.substring(0,16) + '</div>'
+        + '</div>'
       + '</div>'
 
     + '</div>'
@@ -775,7 +768,7 @@ function descargarTicketPDF(){
   var html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">'
     + '<meta name="viewport" content="width=device-width,initial-scale=1">'
     + '<title>Ticket — La Crema Propiedades</title>'
-    + '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">'
+    + '<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">'
     + '<style>'
     + '*{box-sizing:border-box;margin:0;padding:0}'
     + 'body{font-family:"DM Sans",sans-serif;background:#eee;display:flex;flex-direction:column;align-items:center;padding:16px;gap:12px}'
