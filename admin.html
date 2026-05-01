@@ -977,4 +977,36 @@ function renderReportes(el){
         <div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-size:11px;color:var(--muted);margin-bottom:9px">Se generar&aacute; un resumen en video del reporte para tu canal.</div>
       </div>
       <div id="ch-ig-f" style="display:none">
-        <div class="fi
+        <div class="field" style="margin-bottom:9px"><label>Usuario de Instagram</label><input type="text" id="ig-user" placeholder="@tuusuario" oninput="updateSendPrev()"></div>
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-size:11px;color:var(--muted);margin-bottom:9px">Se generar&aacute; una infograf&iacute;a del reporte para tu feed o historia.</div>
+      </div>
+      <div id="send-prev" style="display:none;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:8px;padding:11px 14px;margin-bottom:12px">
+        <div style="font-size:10px;color:var(--gold);font-weight:700;margin-bottom:5px;letter-spacing:.06em">VISTA PREVIA DEL ENV&Iacute;O</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7" id="send-prev-txt"></div>
+      </div>
+      <div style="display:flex;gap:9px;justify-content:flex-end">
+        <button class="btn btn-out" onclick="toast('Exportando PDF...')">&#8595; Exportar PDF</button>
+        <button class="btn btn-gold" onclick="doSendReport()">Enviar reporte</button>
+      </div>
+    </div></div>
+  </div>`;
+  setTimeout(()=>buildBarChart('rep-chart',['Nov','Dic','Ene','Feb','Mar','Abr'],[980,1050,1120,1080,1150,1240],null),50);
+}
+function rTab(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('[id^="rtv-"]').forEach(v=>v.classList.remove('on'));el.classList.add('on');document.getElementById('rtv-'+id).classList.add('on');}
+
+var activeRType='Resumen ejecutivo', activeCh='wa';
+function selRType(el,t){document.querySelectorAll('#rtype-row .fbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');activeRType=t;updateSendPrev();}
+function selCh(ch){
+  activeCh=ch;
+  ['wa','gm','yt','ig'].forEach(c=>{
+    var card=document.getElementById('ch-'+c),f=document.getElementById('ch-'+c+'-f');
+    if(card)card.style.borderColor=c===ch?'var(--border2)':'var(--border)';
+    if(f)f.style.display=c===ch?'block':'none';
+  });
+  updateSendPrev();
+}
+function updateSendPrev(){
+  var destMap={wa:document.getElementById('wa-num')?document.getElementById('wa-num').value:'',gm:document.getElementById('gm-email')?document.getElementById('gm-email').value:'',yt:document.getElementById('yt-ch')?document.getElementById('yt-ch').value:'',ig:document.getElementById('ig-user')?document.getElementById('ig-user').value:''};
+  var dest=destMap[activeCh]; var names={wa:'WhatsApp',gm:'Gmail',yt:'YouTube',ig:'Instagram'};
+  var prev=document.getElementById('send-prev'),txt=document.getElementById('send-prev-txt');
+  if(prev&&txt){prev.style.display=dest?'block':'none';if(dest)txt.innerHTML='Canal: <
