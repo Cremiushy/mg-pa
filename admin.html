@@ -743,42 +743,29 @@ function enviarPDFAdmin(){
 }
 
 function descargarTicketPDF(){
-  // Generar ventana de impresión con el ticket formateado como imagen imprimible
   var body = document.getElementById('ticket-body');
   if(!body) return;
   var contenido = body.innerHTML;
   var ventana = window.open('','_blank','width=480,height=700');
-  ventana.document.write(`<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ticket de Servicio — La Crema Propiedades</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'DM Sans',sans-serif;background:#f0f0f0;display:flex;justify-content:center;padding:20px}
-  .ticket{width:420px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.15)}
-  @media print{
-    body{background:#fff;padding:0}
-    .ticket{box-shadow:none;border-radius:0;width:100%}
-    .no-print{display:none!important}
-  }
-  .print-btn{display:block;width:100%;background:#C9A84C;color:#0B1628;border:none;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.04em}
-  .print-btn:hover{background:#E8C47A}
-</style>
-</head>
-<body>
-<div class="ticket">
-  ${contenido}
-  <button class="print-btn no-print" onclick="window.print()">&#128438; Imprimir / Guardar como PDF</button>
-</div>
-<script>
-  // Auto-trigger print dialog after a short delay
-  setTimeout(function(){ window.print(); }, 800);
-<\/script>
-</body>
-</html>`);
+  var html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<title>Ticket de Servicio \u2014 La Crema Propiedades</title>'
+    + '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">'
+    + '<style>'
+    + '*{box-sizing:border-box;margin:0;padding:0}'
+    + 'body{font-family:"DM Sans",sans-serif;background:#f0f0f0;display:flex;justify-content:center;padding:20px}'
+    + '.ticket{width:420px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.15)}'
+    + '@media print{body{background:#fff;padding:0}.ticket{box-shadow:none;border-radius:0;width:100%}.no-print{display:none!important}}'
+    + '.print-btn{display:block;width:100%;background:#C9A84C;color:#0B1628;border:none;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;letter-spacing:.04em}'
+    + '.print-btn:hover{background:#E8C47A}'
+    + '</style></head><body>'
+    + '<div class="ticket">'
+    + contenido
+    + '<button class="print-btn no-print" onclick="window.print()">&#128438; Imprimir / Guardar como PDF</button>'
+    + '</div>'
+    + '<script>setTimeout(function(){window.print();},800);<\/script>'
+    + '</body></html>';
+  ventana.document.write(html);
   ventana.document.close();
 }
 
@@ -1009,4 +996,302 @@ function updateSendPrev(){
   var destMap={wa:document.getElementById('wa-num')?document.getElementById('wa-num').value:'',gm:document.getElementById('gm-email')?document.getElementById('gm-email').value:'',yt:document.getElementById('yt-ch')?document.getElementById('yt-ch').value:'',ig:document.getElementById('ig-user')?document.getElementById('ig-user').value:''};
   var dest=destMap[activeCh]; var names={wa:'WhatsApp',gm:'Gmail',yt:'YouTube',ig:'Instagram'};
   var prev=document.getElementById('send-prev'),txt=document.getElementById('send-prev-txt');
-  if(prev&&txt){prev.style.display=dest?'block':'none';if(dest)txt.innerHTML='Canal: <
+  if(prev&&txt){prev.style.display=dest?'block':'none';if(dest)txt.innerHTML='Canal: <b style="color:var(--white)">'+names[activeCh]+'</b><br>Destino: <b style="color:var(--white)">'+dest+'</b><br>Reporte: <b style="color:var(--white)">'+activeRType+'</b><br>Per&iacute;odo: <b style="color:var(--white)">Abril 2025</b>';}
+}
+function doSendReport(){toast('Reporte enviado exitosamente &#10003;');}
+
+// ============ WHATSAPP ============
+var CONVS=[
+  {tid:0,msgs:[{d:'in',t:'Buenas tardes, quiero saber cu&aacute;nto debo de la renta',time:'3:14 PM',ai:false},{d:'out',t:'Buenas tardes Carlos &#128075; Seg&uacute;n su cuenta tiene *RD$ 48,000* pendientes con *38 d&iacute;as de atraso*. &iquest;Coordina su pago hoy?',time:'3:14 PM',ai:true},{d:'in',t:'Pagu&eacute; RD$ 760 la semana pasada, no recuerdo cu&aacute;nto me resta',time:'3:16 PM',ai:false},{d:'out',t:'Revisando su historial: el sistema *no registra ning&uacute;n pago de RD$ 760*. El saldo sigue siendo *RD$ 48,000*. Env&iacute;e el comprobante y lo verificamos. &#128206;',time:'3:16 PM',ai:true}],preview:'No recuerdo cu&aacute;nto me resta',time:'3:16 PM',unread:1},
+  {tid:1,msgs:[{d:'in',t:'&iquest;Mi pago fue recibido?',time:'10:02 AM',ai:false},{d:'out',t:'Hola Mar&iacute;a &#128522; S&iacute;, su pago de *RD$ 28,000* fue confirmado hoy. &iexcl;Gracias! &#10003;',time:'10:02 AM',ai:true}],preview:'&iquest;Mi pago fue recibido?',time:'10:02 AM',unread:0},
+  {tid:2,msgs:[{d:'in',t:'&iquest;Cu&aacute;nto es la electricidad?',time:'Ayer',ai:false},{d:'out',t:'Hola Luis &#128075; Su electricidad de abril es *RD$ 2,100*, vence el *5 de mayo*. Puede pagar desde el portal web. &#128187;',time:'Ayer',ai:true}],preview:'&iquest;Cu&aacute;nto es la electricidad?',time:'Ayer',unread:1},
+  {tid:3,msgs:[{d:'in',t:'Tengo una sugerencia para el &aacute;rea com&uacute;n',time:'9:00 AM',ai:false},{d:'out',t:'Buenos d&iacute;as Rosa. Las sugerencias son revisadas por el administrador. Le responder&aacute;n en menos de 24 horas. &#128591;',time:'9:00 AM',ai:false}],preview:'Tengo una sugerencia',time:'9:00 AM',unread:1},
+];
+var activeConv=0, waMode='preguntas';
+
+function renderWhatsApp(el){
+  el.innerHTML=`
+  <div class="kpi-row">
+    <div class="kc" style="border-color:rgba(37,211,102,.2)"><div class="kc-lbl">Mensajes hoy</div><div class="kc-val" style="color:var(--wa)">47</div><div class="kc-sub">38 respondidos por IA</div></div>
+    <div class="kc green"><div class="kc-lbl">Resoluci&oacute;n IA</div><div class="kc-val green">94%</div><div class="kc-sub">Sin intervenci&oacute;n humana</div></div>
+    <div class="kc gold"><div class="kc-lbl">Chats activos</div><div class="kc-val gold">4</div><div class="kc-sub">En este momento</div></div>
+    <div class="kc red"><div class="kc-lbl">Sugerencias</div><div class="kc-val red">5</div><div class="kc-sub">Requieren revisi&oacute;n</div></div>
+  </div>
+  <div style="background:rgba(11,22,40,.8);border:1px solid rgba(37,211,102,.2);border-radius:9px;padding:9px 14px;margin-bottom:13px;display:flex;align-items:center;gap:9px;font-size:12px">
+    <div style="width:8px;height:8px;background:var(--wa);border-radius:50%;animation:apulse 2s infinite"></div>
+    <span style="color:var(--wa);font-weight:600">Agente IA activo</span>
+    <span style="color:var(--muted)">Admin: +1 809-356-4915 &middot; Secundario: +1 929-257-5851</span>
+    <span style="margin-left:auto;color:var(--muted)">24/7 autom&aacute;tico</span>
+  </div>
+  <div class="chat-layout">
+    <div class="conv-list">
+      <div style="padding:8px 10px;border-bottom:1px solid var(--border)"><input type="text" placeholder="Buscar..." style="width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--white);font-size:11px;font-family:var(--fb);outline:none"></div>
+      <div class="conv-items" id="wa-conv-list"></div>
+    </div>
+    <div class="chat-win">
+      <div class="chat-hdr">
+        <div class="conv-av" id="wa-av">CM</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--white)" id="wa-name">Carlos M&eacute;ndez</div><div style="font-size:10px;color:var(--muted)" id="wa-apt">Apto 4B &middot; Los Pinos</div></div>
+        <div style="font-size:10px;color:var(--wa);display:flex;align-items:center;gap:3px"><span style="width:5px;height:5px;background:var(--wa);border-radius:50%;display:inline-block"></span>En l&iacute;nea</div>
+        <div style="background:var(--wa-bg);border:1px solid rgba(37,211,102,.25);color:var(--wa);font-size:10px;padding:3px 8px;border-radius:10px;font-weight:600;margin-left:8px">&#129302; IA Activa</div>
+      </div>
+      <div class="chat-msgs" id="wa-msgs"></div>
+      <div class="chat-input">
+        <div class="mode-btns">
+          <div class="mode-btn wam on" id="wa-btn-preg" onclick="waSetMode('preguntas')">&#128172; Preguntas (Automatizado)</div>
+          <div class="mode-btn sugm" id="wa-btn-sug" onclick="waSetMode('sugerencias')">&#128221; Sugerencias (Manual)</div>
+        </div>
+        <div class="chat-row">
+          <textarea class="chat-ta" id="wa-input" placeholder="Simula pregunta del inquilino &mdash; IA responde..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();waSend()}"></textarea>
+          <button class="chat-send" id="wa-send" onclick="waSend()">&#10148;</button>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px" id="wa-hint">&#129302; IA responde autom&aacute;ticamente consultando la base de datos del inquilino.</div>
+      </div>
+    </div>
+  </div>`;
+  renderWAList(); waLoadConv(0);
+}
+function renderWAList(){
+  var el=document.getElementById('wa-conv-list'); if(!el) return; el.innerHTML='';
+  CONVS.forEach((c,i)=>{
+    var t=TENANTS[c.tid]; var d=document.createElement('div'); d.className='conv-item'+(i===activeConv?' on':'');
+    d.innerHTML=`<div class="conv-av">${t.initials}</div><div style="flex:1;min-width:0"><div class="conv-nm">${t.name}</div><div class="conv-prev">${c.preview}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><div style="font-size:10px;color:var(--muted)">${c.time}</div>${c.unread?`<div class="conv-unread">${c.unread}</div>`:''}</div>`;
+    d.onclick=()=>{activeConv=i;renderWAList();waLoadConv(i);};
+    el.appendChild(d);
+  });
+}
+function waLoadConv(i){
+  var c=CONVS[i],t=TENANTS[c.tid];
+  var av=document.getElementById('wa-av'),nm=document.getElementById('wa-name'),ap=document.getElementById('wa-apt');
+  if(av)av.textContent=t.initials; if(nm)nm.innerHTML=t.name; if(ap)ap.innerHTML='Apto '+t.apt+' &middot; '+t.edif+' &middot; '+t.tel;
+  c.unread=0; renderWAList();
+  var msgs=document.getElementById('wa-msgs'); if(!msgs) return; msgs.innerHTML='';
+  c.msgs.forEach(m=>waAppendMsg(m.d,m.t,m.time,m.ai)); msgs.scrollTop=msgs.scrollHeight;
+}
+function waAppendMsg(dir,text,time,ai){
+  var msgs=document.getElementById('wa-msgs'); if(!msgs) return;
+  var d=document.createElement('div'); d.className='msg '+dir+(ai?' ai':'');
+  d.innerHTML=(ai?'<div class="ai-lbl">&#129302; IA</div>':'')
+    +`<div class="msg-bub">${text.replace(/\*(.*?)\*/g,'<strong>$1</strong>')}</div><div class="msg-time">${time}</div>`;
+  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+}
+function waSetMode(m){
+  waMode=m;
+  document.getElementById('wa-btn-preg').classList.toggle('on',m==='preguntas');
+  document.getElementById('wa-btn-sug').classList.toggle('on',m==='sugerencias');
+  var send=document.getElementById('wa-send'); if(send)send.className='chat-send'+(m==='sugerencias'?' sug-s':'');
+  var inp=document.getElementById('wa-input'); if(inp)inp.placeholder=m==='preguntas'?'Simula pregunta del inquilino &mdash; IA responde...':'Escribe tu respuesta manual...';
+  var hint=document.getElementById('wa-hint'); if(hint)hint.innerHTML=m==='preguntas'?'&#129302; IA responde autom&aacute;ticamente consultando la base de datos.':'&#128221; Respuesta manual &mdash; No automatizado.';
+}
+function waSend(){
+  var inp=document.getElementById('wa-input'); if(!inp) return;
+  var text=inp.value.trim(); if(!text) return;
+  var now=new Date().toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'});
+  var c=CONVS[activeConv],t=TENANTS[c.tid];
+  if(waMode==='preguntas'){
+    waAppendMsg('in',text,now,false); c.msgs.push({d:'in',t:text,time:now,ai:false}); inp.value='';
+    setTimeout(()=>{var reply=aiReply(text,t);waAppendMsg('out',reply,now,true);c.msgs.push({d:'out',t:reply,time:now,ai:true});c.preview=reply.substring(0,40)+'...';c.time=now;renderWAList();},900);
+  } else {
+    waAppendMsg('out',text,now,false); c.msgs.push({d:'out',t:text,time:now,ai:false}); inp.value=''; c.preview=text.substring(0,40); c.time=now; renderWAList();
+    toast('Respuesta manual enviada a '+t.short);
+  }
+}
+
+// ============ PIN MODAL — MODO EDICIÓN ============
+var currentPin = 'Lacremard01';
+var masterKey  = 'Lacremard02';
+
+function openPinModal(){
+  showPinEnterView();
+  document.getElementById('pin-modal').style.display='flex';
+  setTimeout(function(){document.getElementById('pin-input').focus();},100);
+}
+function closePinModal(){
+  document.getElementById('pin-modal').style.display='none';
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-err').style.display='none';
+  clearChangeForm();
+}
+function showPinEnterView(){
+  document.getElementById('pin-view-enter').style.display='block';
+  document.getElementById('pin-view-change').style.display='none';
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-err').style.display='none';
+  setTimeout(function(){document.getElementById('pin-input').focus();},100);
+}
+function showPinChangeView(){
+  document.getElementById('pin-view-enter').style.display='none';
+  document.getElementById('pin-view-change').style.display='block';
+  clearChangeForm();
+  setTimeout(function(){document.getElementById('pin-master-input').focus();},100);
+}
+function clearChangeForm(){
+  ['pin-master-input','pin-new-input','pin-confirm-input'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('pin-change-err').style.display='none';
+  document.getElementById('pin-change-ok').style.display='none';
+}
+function checkPin(){
+  var val=document.getElementById('pin-input').value;
+  if(val===currentPin){
+    closePinModal();
+    toggleAdmin();
+  } else {
+    document.getElementById('pin-err').style.display='block';
+    document.getElementById('pin-input').value='';
+    document.getElementById('pin-input').focus();
+  }
+}
+function changePin(){
+  var master=document.getElementById('pin-master-input').value;
+  var newPin=document.getElementById('pin-new-input').value;
+  var confirm=document.getElementById('pin-confirm-input').value;
+  var errEl=document.getElementById('pin-change-err');
+  var okEl=document.getElementById('pin-change-ok');
+  errEl.style.display='none'; okEl.style.display='none';
+  if(master!==masterKey){
+    errEl.textContent='Clave maestra incorrecta.';
+    errEl.style.display='block';
+    document.getElementById('pin-master-input').value='';
+    document.getElementById('pin-master-input').focus();
+    return;
+  }
+  if(newPin.length<8){
+    errEl.textContent='El nuevo PIN debe tener m\u00ednimo 8 caracteres.';
+    errEl.style.display='block';
+    document.getElementById('pin-new-input').focus();
+    return;
+  }
+  if(newPin!==confirm){
+    errEl.textContent='Los PINs no coinciden. Verifica.';
+    errEl.style.display='block';
+    document.getElementById('pin-confirm-input').value='';
+    document.getElementById('pin-confirm-input').focus();
+    return;
+  }
+  currentPin=newPin;
+  okEl.style.display='block';
+  clearChangeForm();
+  setTimeout(function(){closePinModal();},1800);
+}
+
+// ============ ADMIN MODE ============
+function toggleAdmin(){
+  adminMode=!adminMode;
+  document.body.classList.toggle('admin-mode',adminMode);
+  document.getElementById('admin-bar').classList.toggle('on',adminMode);
+  document.getElementById('save-bar').classList.toggle('on',adminMode);
+  document.querySelectorAll('.ed,[contenteditable]').forEach(el=>el.contentEditable=adminMode?'true':'false');
+  var ppbar=document.getElementById('pp-save-bar'); if(ppbar)ppbar.style.display=adminMode?'flex':'none';
+}
+
+function saveAdmin(){
+  // Si hay un perfil abierto, leer y guardar todos los campos editados
+  if(currentTenant){
+    var map={
+      name:   'pp-nombre',
+      cedula: 'pp-cedula',
+      tel:    'pp-tel',
+      email:  'pp-email',
+      inicio: 'pp-ini',
+      vence:  'pp-vence',
+      contrato:'pp-cont',
+      deposito:'pp-dep'
+    };
+    Object.keys(map).forEach(function(key){
+      var el=document.getElementById(map[key]);
+      if(el){
+        var val=(el.textContent||el.innerText||'').trim();
+        if(val) currentTenant[key]=val;
+      }
+    });
+    // Renta — extraer número
+    var rentaEl=document.getElementById('pp-renta');
+    if(rentaEl){
+      var rentaVal=(rentaEl.textContent||'').replace(/\D/g,'');
+      if(rentaVal) currentTenant.renta=parseInt(rentaVal);
+    }
+    // Apartamento — separar apt y edif si cambió
+    var aptEl=document.getElementById('pp-apt');
+    if(aptEl){
+      var aptTxt=(aptEl.textContent||'').replace('Apto','').trim();
+      var parts=aptTxt.split('·');
+      if(parts[0]) currentTenant.apt=parts[0].trim();
+      if(parts[1]) currentTenant.edif=parts[1].trim();
+    }
+    // Actualizar initials y short
+    if(currentTenant.name){
+      var words=currentTenant.name.trim().split(' ');
+      currentTenant.short=words[0];
+      currentTenant.initials=(words[0]?words[0][0]:'')+(words[1]?words[1][0]:'');
+    }
+    // Persistir en localStorage
+    saveTenants();
+    // Refrescar tarjetas si estamos en esa sección
+    if(currentPage==='inquilinos') renderTenantCards(TENANTS);
+  }
+
+  // También guardar cualquier campo .ed editable en tablas
+  document.querySelectorAll('.ed[contenteditable="true"]').forEach(function(el){
+    el.contentEditable='false';
+  });
+
+  adminMode=false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('admin-bar').classList.remove('on');
+  document.getElementById('save-bar').classList.remove('on');
+  document.querySelectorAll('.ed,[contenteditable]').forEach(function(el){el.contentEditable='false';});
+  var ppbar=document.getElementById('pp-save-bar'); if(ppbar)ppbar.style.display='none';
+  toast('Cambios guardados correctamente ✓');
+}
+
+function cancelAdmin(){
+  adminMode=false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('admin-bar').classList.remove('on');
+  document.getElementById('save-bar').classList.remove('on');
+  document.querySelectorAll('.ed,[contenteditable]').forEach(function(el){el.contentEditable='false';});
+  var ppbar=document.getElementById('pp-save-bar'); if(ppbar)ppbar.style.display='none';
+  // Recargar perfil con datos originales
+  if(currentTenant) openProfile(currentTenant.id);
+}
+
+// Guardar TENANTS en localStorage
+function saveTenants(){
+  try{
+    localStorage.setItem('mgpa_tenants', JSON.stringify(TENANTS));
+  }catch(e){}
+}
+
+// Cargar TENANTS desde localStorage al iniciar
+function loadTenants(){
+  try{
+    var saved=localStorage.getItem('mgpa_tenants');
+    if(saved){
+      var parsed=JSON.parse(saved);
+      // Merge: respetar estructura, solo sobreescribir campos editables
+      parsed.forEach(function(saved,i){
+        if(TENANTS[i]){
+          ['name','short','initials','apt','edif','cedula','tel','email','inicio','vence','contrato','deposito','renta'].forEach(function(k){
+            if(saved[k]!==undefined) TENANTS[i][k]=saved[k];
+          });
+        }
+      });
+    }
+  }catch(e){}
+}
+
+// Llamar al inicio
+loadTenants();
+
+// PORTAL ADMINISTRATIVO MODAL
+function openPortalModal(){
+  document.getElementById('portal-modal').style.display='flex';
+  document.getElementById('portal-err').style.display='none';
+  document.getElementById('portal-key-display').textContent='';
+  document.getElementById('portal-key-input').value='';
+  setTimeout(function(){document.getElementById('portal-key-input').focus();},100);
+}
+function closePortalModal(){
+  documen
