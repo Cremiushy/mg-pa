@@ -4,7 +4,7 @@
 // ============================================================
 
 var TENANTS = [
-  {id:0,name:'Raúl La Crema',short:'Raúl',initials:'RL',apt:'4B',edif:'Los Pinos',cedula:'001-1291-8530',tel:'809-356-4915',email:'raul@lacremapropiedades.com',status:'red',renta:48000,pagado:0,saldo:48000,daysLate:38,inicio:'15 mar 2023',vence:'15 mar 2026',contrato:'CONT-2025-1000',deposito:'RD$ 96,000',
+  {id:0,name:'Raúl Doroteo',short:'Raúl',initials:'RD',apt:'4B',edif:'Los Pinos',cedula:'001-1291853-0',tel:'809-356-4915',email:'raul@lacremapropiedades.com',status:'red',renta:48000,pagado:0,saldo:48000,daysLate:38,inicio:'15 mar 2023',vence:'15 mar 2026',contrato:'CONT-2025-1000',deposito:'RD$ 96,000',
     bills:[{id:'b1',icon:'🏠',name:'Renta abril',amount:48000,status:'pend'},{id:'b2',icon:'💡',name:'Electricidad',amount:2800,status:'warn'},{id:'b3',icon:'💧',name:'Agua',amount:800,status:'ok'},{id:'b4',icon:'📶',name:'Internet',amount:1500,status:'ok'},{id:'b5',icon:'🏢',name:'Área común',amount:1200,status:'warn'}],
     history:[{date:'22 feb',concept:'Renta marzo',amount:'RD$ 48,000',method:'Banreservas',ref:'TRF-0881'},{date:'3 feb',concept:'Renta febrero',amount:'RD$ 48,000',method:'BHD',ref:'TRF-0774'},{date:'5 ene',concept:'Renta enero',amount:'RD$ 48,000',method:'BHD',ref:'TRF-0661'}],
     suggests:[{from:'Admin',initials:'AD',time:'Ayer',tag:'mant',tagLbl:'Mantenimiento',text:'Orden de trabajo para A/C creada. Técnico visitará el martes 9am–12pm.'}]},
