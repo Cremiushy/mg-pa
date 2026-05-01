@@ -153,6 +153,21 @@
   </div>
 </div>
 
+<!-- TICKET MODAL -->
+<div id="ticket-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:950;align-items:center;justify-content:center;padding:16px;overflow-y:auto">
+  <div style="width:100%;max-width:460px;animation:fadeUp .3s ease">
+    <div style="background:rgba(17,34,64,.97);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:16px;margin-bottom:10px">
+      <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--white);margin-bottom:14px;text-align:center">&#127945; Ticket generado</div>
+      <div id="ticket-body"></div>
+      <div style="display:flex;gap:9px;margin-top:14px">
+        <button onclick="cerrarTicketModal()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fb);transition:all .2s">Cerrar</button>
+        <button onclick="descargarTicketPDF()" style="flex:1;background:transparent;border:1px solid var(--border2);color:var(--gold);padding:10px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fb);transition:all .2s">&#8595; PDF</button>
+        <button onclick="enviarTicketWA()" style="flex:2;background:var(--wa);color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--fb);transition:all .2s">&#128242; Enviar por WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- PORTAL ADMINISTRATIVO MODAL -->
 <div id="portal-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:800;align-items:center;justify-content:center;padding:16px">
   <div style="width:400px;background:rgba(17,34,64,.97);border:1px solid rgba(201,168,76,.3);border-radius:18px;padding:30px;backdrop-filter:blur(16px);animation:fadeUp .3s ease">
@@ -417,13 +432,293 @@ function openProfile(id){
   </div></div>
   <div class="pp-card"><div class="pp-card-head">Estado de servicios</div><div style="padding:10px 12px"><div class="svc-grid">${svcItems.map(s=>`<div class="svc-item"><span class="svc-nm">${s.k}</span><span class="svc-v ${s.c}">${s.v}</span></div>`).join('')}</div></div></div>
   <div class="pp-card"><div class="pp-card-head">Historial de pagos</div><div style="padding:7px 12px 10px">${histRows||'<div style="font-size:11px;color:var(--muted);padding:7px 0">Sin historial.</div>'}</div></div>
-  <div class="suggest-panel"><div class="suggest-head"><div style="font-size:12px;font-weight:600;color:var(--white)">Panel de sugerencias</div><span style="background:rgba(201,168,76,.12);color:var(--gold);font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px">${t.suggests?t.suggests.length:0} mensajes</span></div><div class="suggest-list">${sugItems}</div><div class="suggest-new"><textarea placeholder="Enviar mensaje al inquilino..."></textarea><div style="display:flex;gap:7px"><button class="btn btn-out btn-sm" onclick="toast('Categor&iacute;a seleccionada')">Categor&iacute;a</button><button class="btn btn-out btn-sm" onclick="toast('Enviando por WhatsApp...')">&#128242; WA</button><button class="btn btn-gold btn-sm" onclick="toast('Mensaje enviado a ${t.short}')">Enviar</button></div></div></div>`;
+  <div class="suggest-panel">
+    <div class="suggest-head">
+      <div style="font-size:12px;font-weight:600;color:var(--white)">Panel de sugerencias y tickets</div>
+      <span style="background:rgba(201,168,76,.12);color:var(--gold);font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px">${t.suggests?t.suggests.length:0} mensajes</span>
+    </div>
+    <div class="suggest-list">${sugItems}</div>
+    <div class="suggest-new">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;font-weight:500">Crear nuevo ticket y enviar v&iacute;a WhatsApp</div>
+
+      <!-- Tipo de ticket -->
+      <select id="sug-tipo" style="width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--white);font-size:12px;font-family:var(--fb);outline:none;margin-bottom:8px;transition:border-color .2s" onfocus="this.style.borderColor='var(--border2)'" onblur="this.style.borderColor='var(--border)'">
+        <option value="">Tipo de orden...</option>
+        <option>Tuber&iacute;a da&ntilde;ada</option>
+        <option>Pago en atraso</option>
+        <option>Reparaci&oacute;n el&eacute;ctrica</option>
+        <option>Mantenimiento general</option>
+        <option>Aire acondicionado</option>
+        <option>Filtraci&oacute;n de agua</option>
+        <option>Pintura y acabados</option>
+        <option>Puerta o ventana</option>
+        <option>Reclamo del inquilino</option>
+        <option>Otro</option>
+      </select>
+
+      <!-- Tipo de pago -->
+      <select id="sug-pago" style="width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--white);font-size:12px;font-family:var(--fb);outline:none;margin-bottom:8px;transition:border-color .2s" onfocus="this.style.borderColor='var(--border2)'" onblur="this.style.borderColor='var(--border)'">
+        <option value="">Tipo de pago (si aplica)...</option>
+        <option>Visa</option>
+        <option>MasterCard</option>
+        <option>ATH (Transferencia)</option>
+        <option>ATM (Cajero)</option>
+        <option>Cheque</option>
+        <option>Efectivo</option>
+        <option>No aplica</option>
+      </select>
+
+      <!-- Técnico -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
+        <input id="sug-tecnico" type="text" placeholder="Nombre del t&eacute;cnico..." style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--white);font-size:12px;font-family:var(--fb);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--border2)'" onblur="this.style.borderColor='var(--border)'">
+        <input id="sug-badge" type="text" placeholder="Badge # del t&eacute;cnico..." style="background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--white);font-size:12px;font-family:var(--fb);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--border2)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+
+      <!-- Mensaje -->
+      <textarea id="sug-text" placeholder="Descripci&oacute;n del ticket o mensaje al inquilino..." style="width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:9px 11px;color:var(--white);font-size:12px;font-family:var(--fb);resize:none;outline:none;height:60px;transition:border-color .2s;display:block;margin-bottom:8px" onfocus="this.style.borderColor='var(--border2)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+
+      <!-- Calendario 14 días -->
+      <div style="font-size:10px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;font-weight:500">Fecha de visita t&eacute;cnica (pr&oacute;ximos 14 d&iacute;as)</div>
+      <div id="sug-calendar-${t.id}" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px"></div>
+
+      <!-- Botón enviar -->
+      <button class="btn btn-gold" style="width:100%;justify-content:center;padding:10px" onclick="enviarTicket(${t.id})">
+        &#128242; Crear ticket y enviar por WhatsApp
+      </button>
+    </div>
+  </div>`;
+
+  // Render calendar
+  renderTicketCalendar(t.id);
   document.getElementById('profile-panel').classList.add('open');
   document.getElementById('pp-back').classList.add('on');
 }
 function ppF(lbl,id,val,cls){return `<div class="pp-f${cls?' '+cls:''}""><div class="pp-lbl">${lbl}</div><div class="pp-val" contenteditable="false" id="${id}">${val}</div></div>`;}
 function closeProfile(){document.getElementById('profile-panel').classList.remove('open');document.getElementById('pp-back').classList.remove('on');}
 function sendWAToTenant(){if(currentTenant)toast('WhatsApp enviado a '+currentTenant.short);}
+
+// ============ TICKET SYSTEM ============
+var selectedVisitDate = null;
+var ticketCounter = parseInt(localStorage.getItem('mgpa_ticket_counter')||'1000');
+
+function renderTicketCalendar(tid){
+  var cal = document.getElementById('sug-calendar-'+tid);
+  if(!cal) return;
+  cal.innerHTML = '';
+  var today = new Date();
+  for(var i=0; i<14; i++){
+    var d = new Date(today);
+    d.setDate(today.getDate()+i);
+    var day = d.getDate();
+    var weekday = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'][d.getDay()];
+    var dateStr = d.toLocaleDateString('es-DO',{day:'numeric',month:'short'});
+    var btn = document.createElement('div');
+    btn.id = 'cal-day-'+tid+'-'+i;
+    btn.style.cssText = 'background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:6px 4px;text-align:center;cursor:pointer;transition:all .2s;';
+    btn.innerHTML = '<div style="font-size:9px;color:var(--muted)">'+weekday+'</div><div style="font-size:13px;font-weight:600;color:var(--white)">'+day+'</div>';
+    btn.setAttribute('data-date', dateStr);
+    btn.setAttribute('data-full', d.toLocaleDateString('es-DO',{weekday:'long',day:'numeric',month:'long',year:'numeric'}));
+    btn.onclick = (function(b, ds, df){
+      return function(){
+        // Deselect all
+        document.querySelectorAll('[id^="cal-day-'+tid+'-"]').forEach(function(x){
+          x.style.background='var(--navy3)';
+          x.style.borderColor='var(--border)';
+          x.querySelector('div:last-child').style.color='var(--white)';
+        });
+        // Select this
+        b.style.background='rgba(201,168,76,.15)';
+        b.style.borderColor='var(--gold)';
+        b.querySelector('div:last-child').style.color='var(--gold)';
+        selectedVisitDate = df;
+        toast('Fecha seleccionada: '+ds);
+      };
+    })(btn, dateStr, btn.getAttribute('data-full'));
+    cal.appendChild(btn);
+  }
+}
+
+function generarQR(texto){
+  // QR simple en SVG usando módulos de puntos
+  var size = 80;
+  var cells = 10;
+  var cell = size/cells;
+  var svg = '<svg width="'+size+'" height="'+size+'" xmlns="http://www.w3.org/2000/svg" style="background:#fff;border-radius:4px;padding:2px">';
+  // Pseudo-random pattern based on text hash
+  var hash = 0;
+  for(var i=0;i<texto.length;i++) hash=(hash<<5)-hash+texto.charCodeAt(i);
+  for(var r=0;r<cells;r++){
+    for(var c=0;c<cells;c++){
+      var bit = (hash >> (r*cells+c)) & 1;
+      // Always draw corners
+      if((r<3&&c<3)||(r<3&&c>cells-4)||(r>cells-4&&c<3)) bit=1;
+      if(bit) svg+='<rect x="'+(c*cell)+'" y="'+(r*cell)+'" width="'+cell+'" height="'+cell+'" fill="#0B1628"/>';
+    }
+  }
+  svg+='</svg>';
+  return svg;
+}
+
+function enviarTicket(tid){
+  var t = TENANTS.find(function(x){return x.id===tid;}); if(!t) return;
+  var tipo    = document.getElementById('sug-tipo').value;
+  var pago    = document.getElementById('sug-pago').value;
+  var tecnico = document.getElementById('sug-tecnico').value.trim();
+  var badge   = document.getElementById('sug-badge').value.trim();
+  var texto   = document.getElementById('sug-text').value.trim();
+
+  if(!tipo){ toast('Selecciona el tipo de orden'); return; }
+  if(!texto){ toast('Escribe una descripción del ticket'); return; }
+  if(!selectedVisitDate){ toast('Selecciona una fecha de visita del calendario'); return; }
+
+  ticketCounter++;
+  localStorage.setItem('mgpa_ticket_counter', ticketCounter);
+
+  var now = new Date();
+  var fechaEmision = now.toLocaleDateString('es-DO',{day:'numeric',month:'long',year:'numeric'});
+  var horaEmision  = now.toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'});
+  var numOrden = 'ORD-'+ticketCounter;
+  var qrData = numOrden+'-'+t.cedula+'-'+now.getTime();
+
+  // Save to suggests
+  if(!t.suggests) t.suggests=[];
+  t.suggests.unshift({
+    from:'Admin',initials:'AD',time:'Ahora',tag:'mant',tagLbl:tipo,
+    text:'🎫 Ticket '+numOrden+' — '+tipo+' | Visita: '+selectedVisitDate+(tecnico?' | Técnico: '+tecnico+' #'+badge:'')
+  });
+
+  // Open ticket modal
+  abrirTicketModal({
+    numOrden, tipo, pago, tecnico, badge, texto,
+    fechaEmision, horaEmision,
+    visitaFecha: selectedVisitDate,
+    tenant: t, qrData
+  });
+
+  // Reset form
+  document.getElementById('sug-tipo').value='';
+  document.getElementById('sug-pago').value='';
+  document.getElementById('sug-tecnico').value='';
+  document.getElementById('sug-badge').value='';
+  document.getElementById('sug-text').value='';
+  selectedVisitDate=null;
+}
+
+function abrirTicketModal(d){
+  var t = d.tenant;
+  var qrSvg = generarQR(d.qrData);
+  var modal = document.getElementById('ticket-modal');
+  document.getElementById('ticket-body').innerHTML = `
+    <div style="background:#fff;color:#0B1628;border-radius:12px;overflow:hidden;max-width:420px;margin:0 auto">
+      <!-- Header -->
+      <div style="background:#0B1628;padding:18px 20px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:17px;color:#C9A84C">La Crema Propiedades</div>
+          <div style="font-size:9px;color:#8896A8;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Ticket Oficial de Servicio</div>
+        </div>
+        <div style="text-align:right">${qrSvg}</div>
+      </div>
+      <!-- Status bar -->
+      <div style="background:#C9A84C;padding:6px 20px;font-size:11px;font-weight:700;color:#0B1628;display:flex;justify-content:space-between">
+        <span>${d.numOrden}</span>
+        <span>Emitido: ${d.fechaEmision} ${d.horaEmision}</span>
+      </div>
+      <!-- Body -->
+      <div style="padding:18px 20px">
+        <!-- Inquilino -->
+        <div style="background:#f8f6f2;border-radius:8px;padding:12px 14px;margin-bottom:14px">
+          <div style="font-size:10px;color:#8896A8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-weight:600">Inquilino</div>
+          <div style="font-size:14px;font-weight:700;color:#0B1628">${t.name}</div>
+          <div style="font-size:12px;color:#555;margin-top:2px">Apto ${t.apt} &middot; ${t.edif} &middot; CI: ${t.cedula}</div>
+          <div style="font-size:12px;color:#555;margin-top:2px">&#128242; ${t.tel}</div>
+        </div>
+        <!-- Detalles del ticket -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px">
+          ${tRow('Nombre de la orden', d.tipo)}
+          ${tRow('N\u00famero de orden', d.numOrden)}
+          ${tRow('Fecha visita t\u00e9cnica', d.visitaFecha)}
+          ${tRow('Tipo de pago', d.pago||'No aplica')}
+          ${tRow('T\u00e9cnico asignado', d.tecnico||'Por asignar')}
+          ${tRow('Badge # del t\u00e9cnico', d.badge||'Por asignar')}
+          ${tRow('Fecha de emisi\u00f3n', d.fechaEmision)}
+          ${tRow('Hora de emisi\u00f3n', d.horaEmision)}
+        </div>
+        <!-- Descripción -->
+        <div style="background:#f8f6f2;border-radius:8px;padding:12px 14px;margin-bottom:14px">
+          <div style="font-size:10px;color:#8896A8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;font-weight:600">Descripci&oacute;n</div>
+          <div style="font-size:13px;color:#333;line-height:1.5">${d.texto}</div>
+        </div>
+        <!-- Proceso visita -->
+        <div style="background:#f0f8f0;border:1px solid #c8e6c8;border-radius:8px;padding:12px 14px;margin-bottom:14px">
+          <div style="font-size:10px;color:#2e7d32;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;font-weight:700">Proceso durante y despu&eacute;s de la visita</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            ${['Llegada del t\u00e9cnico confirmada','Inspecci\u00f3n inicial del problema','Trabajo en proceso','Trabajo completado','Firmas y aprobaci\u00f3n del inquilino','Cierre del ticket'].map((s,i)=>`
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:20px;height:20px;border-radius:50%;background:#e8f5e9;border:2px solid #a5d6a7;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#2e7d32;flex-shrink:0">${i+1}</div>
+              <div style="font-size:12px;color:#333">${s}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <!-- Notas del técnico -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:10px;color:#8896A8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-weight:600">Notas del t\u00e9cnico</div>
+          <textarea id="ticket-notas" placeholder="El t\u00e9cnico puede escribir cualquier percance, detalle del trabajo, motivo de no conclusi\u00f3n, observaciones del pago, etc..." style="width:100%;background:#f8f6f2;border:1px solid #ddd;border-radius:7px;padding:9px 11px;color:#333;font-size:12px;font-family:'DM Sans',sans-serif;resize:none;outline:none;height:80px;line-height:1.5"></textarea>
+        </div>
+        <!-- QR reference -->
+        <div style="text-align:center;padding:10px 0;border-top:1px dashed #ddd;margin-top:4px">
+          <div style="font-size:9px;color:#999;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase">C&oacute;digo QR para referencias futuras</div>
+          <div style="display:flex;justify-content:center">${qrSvg}</div>
+          <div style="font-size:9px;color:#999;margin-top:5px;font-family:monospace">${d.qrData.substring(0,24)}...</div>
+        </div>
+      </div>
+    </div>`;
+
+  modal.style.display='flex';
+
+  // Store ticket data for WhatsApp
+  modal.setAttribute('data-wa-num', t.tel);
+  modal.setAttribute('data-wa-msg',
+    '🎫 *TICKET DE SERVICIO — La Crema Propiedades*\n\n'+
+    '📋 Orden: *'+d.numOrden+'*\n'+
+    '👤 Inquilino: *'+t.name+'*\n'+
+    '🏠 Apto: *'+t.apt+' · '+t.edif+'*\n'+
+    '🔧 Tipo: *'+d.tipo+'*\n'+
+    '📅 Visita técnica: *'+d.visitaFecha+'*\n'+
+    '💳 Pago: *'+(d.pago||'No aplica')+'*\n'+
+    (d.tecnico?'👷 Técnico: *'+d.tecnico+'* | Badge: *'+d.badge+'*\n':'')+
+    '📝 Descripción: '+d.texto+'\n\n'+
+    '🗓 Emitido: '+d.fechaEmision+' a las '+d.horaEmision+'\n'+
+    '🔑 Ref: '+d.qrData.substring(0,16)
+  );
+}
+
+function tRow(lbl, val){
+  return '<div style="background:#f8f6f2;border-radius:7px;padding:9px 11px"><div style="font-size:9px;color:#8896A8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px;font-weight:600">'+lbl+'</div><div style="font-size:12px;font-weight:600;color:#0B1628">'+val+'</div></div>';
+}
+
+function enviarTicketWA(){
+  var modal = document.getElementById('ticket-modal');
+  var num = modal.getAttribute('data-wa-num')||'';
+  var msg = modal.getAttribute('data-wa-msg')||'';
+  var notas = document.getElementById('ticket-notas');
+  if(notas && notas.value.trim()) msg += '\n\n📌 *Notas del técnico:* '+notas.value.trim();
+  num = num.replace(/\D/g,'');
+  if(num.length===10) num='1'+num;
+  var url = 'https://wa.me/'+num+'?text='+encodeURIComponent(msg);
+  window.open(url,'_blank');
+  cerrarTicketModal();
+  toast('Abriendo WhatsApp...');
+}
+
+function descargarTicketPDF(){
+  toast('Descargando ticket como PDF...');
+  cerrarTicketModal();
+}
+
+function cerrarTicketModal(){
+  document.getElementById('ticket-modal').style.display='none';
+}
+
 
 // ============ COBROS ============
 function renderCobros(el){
