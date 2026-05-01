@@ -157,12 +157,19 @@
 <div id="ticket-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:950;align-items:center;justify-content:center;padding:16px;overflow-y:auto">
   <div style="width:100%;max-width:460px;animation:fadeUp .3s ease">
     <div style="background:rgba(17,34,64,.97);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:16px;margin-bottom:10px">
-      <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--white);margin-bottom:14px;text-align:center">&#127945; Ticket generado</div>
+      <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--white);margin-bottom:14px;text-align:center">&#127945; Ticket generado — enviado por WhatsApp</div>
       <div id="ticket-body"></div>
-      <div style="display:flex;gap:9px;margin-top:14px">
-        <button onclick="cerrarTicketModal()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fb);transition:all .2s">Cerrar</button>
-        <button onclick="descargarTicketPDF()" style="flex:1;background:transparent;border:1px solid var(--border2);color:var(--gold);padding:10px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fb);transition:all .2s">&#8595; PDF</button>
-        <button onclick="enviarTicketWA()" style="flex:2;background:var(--wa);color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--fb);transition:all .2s">&#128242; Enviar por WhatsApp</button>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+        <div style="display:flex;gap:8px">
+          <button onclick="cerrarTicketModal()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fb)">Cerrar</button>
+          <button onclick="enviarTicketWA()" style="flex:2;background:var(--wa);color:#fff;border:none;padding:10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--fb)">&#128242; Reenviar al inquilino</button>
+        </div>
+        <div style="font-size:10px;color:var(--muted);text-align:center;letter-spacing:.06em;text-transform:uppercase">Enviar PDF v&iacute;a WhatsApp</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="enviarPDFInquilino()" style="flex:1;background:rgba(201,168,76,.1);border:1px solid var(--border2);color:var(--gold);padding:10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--fb)">&#128196; PDF al inquilino</button>
+          <button onclick="enviarPDFAdmin()" style="flex:1;background:rgba(201,168,76,.1);border:1px solid var(--border2);color:var(--gold);padding:10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--fb)">&#128196; PDF al admin</button>
+        </div>
+        <button onclick="descargarTicketPDF()" style="width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);padding:9px;border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--fb)">&#8595; Descargar PDF local</button>
       </div>
     </div>
   </div>
@@ -416,7 +423,7 @@ function openProfile(id){
   document.getElementById('pp-title').textContent=t.short+' — Apto '+t.apt;
   var svcItems=[{k:'Renta',v:t.saldo>0?'Pendiente':'Al d&iacute;a',c:t.saldo>0?'bad':'ok'},{k:'Agua',v:'Al d&iacute;a',c:'ok'},{k:'Electricidad',v:t.bills[1].status==='ok'?'Al d&iacute;a':'Pendiente',c:t.bills[1].status==='ok'?'ok':'bad'},{k:'Internet',v:t.bills[3].status==='ok'?'Al d&iacute;a':'Pendiente',c:t.bills[3].status==='ok'?'ok':'bad'}];
   var histRows=t.history.map(h=>`<div class="hist-row"><div class="hdot" style="background:var(--success)"></div><div style="flex:1;font-weight:500">${h.concept}</div><div>${h.amount}</div><div style="color:var(--muted)">${h.method}</div><div style="color:var(--muted)">${h.date}</div></div>`).join('');
-  var sugItems=t.suggests&&t.suggests.length?t.suggests.map(s=>`<div class="si"><div class="si-top"><div class="si-av">${s.initials}</div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--white)">${s.from}</div><div style="font-size:10px;color:var(--muted)">${s.time}</div></div><span class="si-tag ${s.tag}">${s.tagLbl}</span></div><div class="si-text">${s.text}</div><div class="si-actions"><button class="si-btn" onclick="toast('Respondiendo...')">&#8617; Responder</button><button class="si-btn primary" onclick="toast('WhatsApp enviado')">&#128242; WA</button></div></div>`).join('')+'':'<div style="padding:14px;font-size:12px;color:var(--muted);text-align:center">Sin mensajes a&uacute;n.</div>';
+  var sugItems=t.suggests&&t.suggests.length?t.suggests.map(s=>`<div class="si"><div class="si-top"><div class="si-av">${s.initials}</div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--white)">${s.from}</div><div style="font-size:10px;color:var(--muted)">${s.time}</div></div><span class="si-tag ${s.tag}">${s.tagLbl}</span></div><div class="si-text">${s.text}</div><div class="si-actions"><button class="si-btn primary" onclick="toast('WhatsApp enviado')">&#128242; WA</button></div></div>`).join('')+'':'<div style="padding:14px;font-size:12px;color:var(--muted);text-align:center">Sin mensajes a&uacute;n.</div>';
   document.getElementById('pp-body').innerHTML=`
   <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">
     <div class="pp-av">${t.initials}</div>
@@ -675,10 +682,10 @@ function abrirTicketModal(d){
 
   modal.style.display='flex';
 
-  // Store ticket data for WhatsApp
+  // Guardar datos para acciones
   modal.setAttribute('data-wa-num', t.tel);
-  modal.setAttribute('data-wa-msg',
-    '🎫 *TICKET DE SERVICIO — La Crema Propiedades*\n\n'+
+  modal.setAttribute('data-wa-admin', ADMIN_NUMBERS.principal.replace(/\D/g,''));
+  var msg = '🎫 *TICKET DE SERVICIO — La Crema Propiedades*\n\n'+
     '📋 Orden: *'+d.numOrden+'*\n'+
     '👤 Inquilino: *'+t.name+'*\n'+
     '🏠 Apto: *'+t.apt+' · '+t.edif+'*\n'+
@@ -688,8 +695,15 @@ function abrirTicketModal(d){
     (d.tecnico?'👷 Técnico: *'+d.tecnico+'* | Badge: *'+d.badge+'*\n':'')+
     '📝 Descripción: '+d.texto+'\n\n'+
     '🗓 Emitido: '+d.fechaEmision+' a las '+d.horaEmision+'\n'+
-    '🔑 Ref: '+d.qrData.substring(0,16)
-  );
+    '🔑 Ref: '+d.qrData.substring(0,16);
+  modal.setAttribute('data-wa-msg', msg);
+
+  // AUTO-ENVÍO inmediato al número del inquilino
+  setTimeout(function(){
+    var num = t.tel.replace(/\D/g,'');
+    if(num.length===10) num='1'+num;
+    window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+  }, 600);
 }
 
 function tRow(lbl, val){
@@ -697,6 +711,7 @@ function tRow(lbl, val){
 }
 
 function enviarTicketWA(){
+  // Ya se envió automáticamente — esta función reenvía si se desea
   var modal = document.getElementById('ticket-modal');
   var num = modal.getAttribute('data-wa-num')||'';
   var msg = modal.getAttribute('data-wa-msg')||'';
@@ -704,15 +719,32 @@ function enviarTicketWA(){
   if(notas && notas.value.trim()) msg += '\n\n📌 *Notas del técnico:* '+notas.value.trim();
   num = num.replace(/\D/g,'');
   if(num.length===10) num='1'+num;
-  var url = 'https://wa.me/'+num+'?text='+encodeURIComponent(msg);
-  window.open(url,'_blank');
-  cerrarTicketModal();
-  toast('Abriendo WhatsApp...');
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+  toast('Reenviando al inquilino por WhatsApp...');
+}
+
+function enviarPDFInquilino(){
+  var modal = document.getElementById('ticket-modal');
+  var num = modal.getAttribute('data-wa-num')||'';
+  var msg = modal.getAttribute('data-wa-msg')||'';
+  msg += '\n\n📎 *[PDF adjunto del ticket]*';
+  num = num.replace(/\D/g,'');
+  if(num.length===10) num='1'+num;
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+  toast('Enviando PDF al inquilino por WhatsApp...');
+}
+
+function enviarPDFAdmin(){
+  var modal = document.getElementById('ticket-modal');
+  var adminNum = modal.getAttribute('data-wa-admin')||'18093564915';
+  var msg = modal.getAttribute('data-wa-msg')||'';
+  msg += '\n\n📎 *[PDF adjunto del ticket — copia administrador]*';
+  window.open('https://wa.me/'+adminNum+'?text='+encodeURIComponent(msg),'_blank');
+  toast('Enviando PDF al administrador por WhatsApp...');
 }
 
 function descargarTicketPDF(){
   toast('Descargando ticket como PDF...');
-  cerrarTicketModal();
 }
 
 function cerrarTicketModal(){
