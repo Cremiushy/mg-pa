@@ -615,70 +615,95 @@ function abrirTicketModal(d){
   var t = d.tenant;
   var qrSvg = generarQR(d.qrData);
   var modal = document.getElementById('ticket-modal');
-  document.getElementById('ticket-body').innerHTML = `
-    <div style="background:#fff;color:#0B1628;border-radius:12px;overflow:hidden;max-width:420px;margin:0 auto">
-      <!-- Header -->
-      <div style="background:#0B1628;padding:18px 20px;display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:17px;color:#C9A84C">La Crema Propiedades</div>
-          <div style="font-size:9px;color:#8896A8;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Ticket Oficial de Servicio</div>
-        </div>
-        <div style="text-align:right">${qrSvg}</div>
-      </div>
-      <!-- Status bar -->
-      <div style="background:#C9A84C;padding:6px 20px;font-size:11px;font-weight:700;color:#0B1628;display:flex;justify-content:space-between">
-        <span>${d.numOrden}</span>
-        <span>Emitido: ${d.fechaEmision} ${d.horaEmision}</span>
-      </div>
-      <!-- Body -->
-      <div style="padding:18px 20px">
-        <!-- Inquilino -->
-        <div style="background:#f8f6f2;border-radius:8px;padding:12px 14px;margin-bottom:14px">
-          <div style="font-size:10px;color:#8896A8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-weight:600">Inquilino</div>
-          <div style="font-size:14px;font-weight:700;color:#0B1628">${t.name}</div>
-          <div style="font-size:12px;color:#555;margin-top:2px">Apto ${t.apt} &middot; ${t.edif} &middot; CI: ${t.cedula}</div>
-          <div style="font-size:12px;color:#555;margin-top:2px">&#128242; ${t.tel}</div>
-        </div>
-        <!-- Detalles del ticket -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px">
-          ${tRow('Nombre de la orden', d.tipo)}
-          ${tRow('N\u00famero de orden', d.numOrden)}
-          ${tRow('Fecha visita t\u00e9cnica', d.visitaFecha)}
-          ${tRow('Tipo de pago', d.pago||'No aplica')}
-          ${tRow('T\u00e9cnico asignado', d.tecnico||'Por asignar')}
-          ${tRow('Badge # del t\u00e9cnico', d.badge||'Por asignar')}
-          ${tRow('Fecha de emisi\u00f3n', d.fechaEmision)}
-          ${tRow('Hora de emisi\u00f3n', d.horaEmision)}
-        </div>
-        <!-- Descripción -->
-        <div style="background:#f8f6f2;border-radius:8px;padding:12px 14px;margin-bottom:14px">
-          <div style="font-size:10px;color:#8896A8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;font-weight:600">Descripci&oacute;n</div>
-          <div style="font-size:13px;color:#333;line-height:1.5">${d.texto}</div>
-        </div>
-        <!-- Proceso visita -->
-        <div style="background:#f0f8f0;border:1px solid #c8e6c8;border-radius:8px;padding:12px 14px;margin-bottom:14px">
-          <div style="font-size:10px;color:#2e7d32;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;font-weight:700">Proceso durante y despu&eacute;s de la visita</div>
-          <div style="display:flex;flex-direction:column;gap:6px">
-            ${['Llegada del t\u00e9cnico confirmada','Inspecci\u00f3n inicial del problema','Trabajo en proceso','Trabajo completado','Firmas y aprobaci\u00f3n del inquilino','Cierre del ticket'].map((s,i)=>`
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="width:20px;height:20px;border-radius:50%;background:#e8f5e9;border:2px solid #a5d6a7;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#2e7d32;flex-shrink:0">${i+1}</div>
-              <div style="font-size:12px;color:#333">${s}</div>
-            </div>`).join('')}
-          </div>
-        </div>
-        <!-- Notas del técnico -->
-        <div style="margin-bottom:14px">
-          <div style="font-size:10px;color:#8896A8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-weight:600">Notas del t\u00e9cnico</div>
-          <textarea id="ticket-notas" placeholder="El t\u00e9cnico puede escribir cualquier percance, detalle del trabajo, motivo de no conclusi\u00f3n, observaciones del pago, etc..." style="width:100%;background:#f8f6f2;border:1px solid #ddd;border-radius:7px;padding:9px 11px;color:#333;font-size:12px;font-family:'DM Sans',sans-serif;resize:none;outline:none;height:80px;line-height:1.5"></textarea>
-        </div>
-        <!-- QR reference -->
-        <div style="text-align:center;padding:10px 0;border-top:1px dashed #ddd;margin-top:4px">
-          <div style="font-size:9px;color:#999;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase">C&oacute;digo QR para referencias futuras</div>
-          <div style="display:flex;justify-content:center">${qrSvg}</div>
-          <div style="font-size:9px;color:#999;margin-top:5px;font-family:monospace">${d.qrData.substring(0,24)}...</div>
-        </div>
-      </div>
-    </div>`;
+
+  document.getElementById('ticket-body').innerHTML =
+    '<div id="ticket-print" style="background:#fff;color:#0B1628;width:100%;max-width:420px;margin:0 auto;font-family:\'DM Sans\',sans-serif;">'
+
+    // HEADER
+    + '<div style="background:#0B1628;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">'
+      + '<div>'
+        + '<div style="font-family:\'Playfair Display\',serif;font-size:16px;color:#C9A84C;font-weight:700">La Crema Propiedades</div>'
+        + '<div style="font-size:9px;color:#8896A8;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Orden de Servicio Oficial</div>'
+      + '</div>'
+      + '<div>' + qrSvg + '</div>'
+    + '</div>'
+
+    // GOLD BAR
+    + '<div style="background:#C9A84C;padding:5px 18px;display:flex;justify-content:space-between;align-items:center">'
+      + '<span style="font-size:12px;font-weight:800;color:#0B1628;letter-spacing:.06em">' + d.numOrden + '</span>'
+      + '<span style="font-size:10px;font-weight:600;color:#0B1628">' + d.fechaEmision + ' &nbsp;|&nbsp; ' + d.horaEmision + '</span>'
+    + '</div>'
+
+    // BODY
+    + '<div style="padding:12px 16px">'
+
+      // SECCIÓN 1: INQUILINO + ORDEN en dos columnas
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'
+
+        // Columna izquierda: Inquilino
+        + '<div style="background:#f7f5f1;border-left:3px solid #C9A84C;border-radius:0 6px 6px 0;padding:8px 10px">'
+          + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px">Inquilino</div>'
+          + '<div style="font-size:13px;font-weight:700;color:#0B1628;line-height:1.3">' + t.name + '</div>'
+          + '<div style="font-size:10px;color:#555;margin-top:3px">Apto ' + t.apt + ' &middot; ' + t.edif + '</div>'
+          + '<div style="font-size:10px;color:#555">CI: ' + t.cedula + '</div>'
+          + '<div style="font-size:10px;color:#555">&#9990; ' + t.tel + '</div>'
+        + '</div>'
+
+        // Columna derecha: Detalles de la orden
+        + '<div style="background:#f7f5f1;border-left:3px solid #0B1628;border-radius:0 6px 6px 0;padding:8px 10px">'
+          + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px">Orden</div>'
+          + '<div style="font-size:11px;font-weight:700;color:#0B1628">' + d.tipo + '</div>'
+          + '<div style="font-size:10px;color:#555;margin-top:3px">&#128197; Visita: <b>' + d.visitaFecha + '</b></div>'
+          + '<div style="font-size:10px;color:#555">&#128179; Pago: ' + (d.pago||'No aplica') + '</div>'
+          + '<div style="font-size:10px;color:#555">&#128119; ' + (d.tecnico||'Por asignar') + ' &nbsp;#' + (d.badge||'—') + '</div>'
+        + '</div>'
+      + '</div>'
+
+      // SECCIÓN 2: Descripción (compacta)
+      + '<div style="background:#f7f5f1;border-radius:6px;padding:7px 10px;margin-bottom:10px">'
+        + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:3px">Descripci&oacute;n del trabajo</div>'
+        + '<div style="font-size:11px;color:#333;line-height:1.4">' + d.texto + '</div>'
+      + '</div>'
+
+      // SECCIÓN 3: Proceso en línea horizontal
+      + '<div style="margin-bottom:10px">'
+        + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:6px">Proceso de la visita</div>'
+        + '<div style="display:flex;align-items:flex-start;gap:0">'
+        + ['Llegada','Inspecci&oacute;n','En proceso','Completado','Aprobaci&oacute;n','Cierre'].map(function(s,i,arr){
+            return '<div style="flex:1;text-align:center">'
+              + '<div style="width:22px;height:22px;border-radius:50%;background:#0B1628;border:2px solid #C9A84C;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#C9A84C;margin:0 auto 3px">'+(i+1)+'</div>'
+              + (i<arr.length-1?'<div style="height:2px;background:#ddd;position:relative;top:-13px;margin:0 -8px;z-index:0"></div>':'')
+              + '<div style="font-size:8px;color:#555;line-height:1.2;margin-top:2px">'+s+'</div>'
+            + '</div>';
+          }).join('')
+        + '</div>'
+      + '</div>'
+
+      // SECCIÓN 4: Notas + QR en dos columnas
+      + '<div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start">'
+
+        // Notas del técnico
+        + '<div>'
+          + '<div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:4px">Notas del t&eacute;cnico</div>'
+          + '<textarea id="ticket-notas" placeholder="Observaciones, percances, detalles del pago..." style="width:100%;background:#f7f5f1;border:1px solid #ddd;border-radius:6px;padding:7px 9px;color:#333;font-size:11px;font-family:\'DM Sans\',sans-serif;resize:none;outline:none;height:64px;line-height:1.4"></textarea>'
+        + '</div>'
+
+        // QR
+        + '<div style="text-align:center">'
+          + '<div style="font-size:8px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">QR Ref.</div>'
+          + qrSvg
+          + '<div style="font-size:8px;color:#bbb;margin-top:3px;font-family:monospace">' + d.numOrden + '</div>'
+        + '</div>'
+      + '</div>'
+
+      // FOOTER
+      + '<div style="border-top:1px dashed #ddd;margin-top:10px;padding-top:8px;display:flex;justify-content:space-between;align-items:center">'
+        + '<div style="font-size:9px;color:#aaa">La Crema Propiedades &copy; ' + new Date().getFullYear() + '</div>'
+        + '<div style="font-size:9px;color:#aaa">Ref: ' + d.qrData.substring(0,16) + '</div>'
+      + '</div>'
+
+    + '</div>'
+  + '</div>';
 
   modal.style.display='flex';
 
@@ -743,27 +768,29 @@ function enviarPDFAdmin(){
 }
 
 function descargarTicketPDF(){
-  var body = document.getElementById('ticket-body');
+  var body = document.getElementById('ticket-print') || document.getElementById('ticket-body');
   if(!body) return;
-  var contenido = body.innerHTML;
-  var ventana = window.open('','_blank','width=480,height=700');
+  var contenido = body.outerHTML;
+  var ventana = window.open('','_blank','width=500,height:650');
   var html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">'
     + '<meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<title>Ticket de Servicio \u2014 La Crema Propiedades</title>'
+    + '<title>Ticket — La Crema Propiedades</title>'
     + '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">'
     + '<style>'
     + '*{box-sizing:border-box;margin:0;padding:0}'
-    + 'body{font-family:"DM Sans",sans-serif;background:#f0f0f0;display:flex;justify-content:center;padding:20px}'
-    + '.ticket{width:420px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.15)}'
-    + '@media print{body{background:#fff;padding:0}.ticket{box-shadow:none;border-radius:0;width:100%}.no-print{display:none!important}}'
-    + '.print-btn{display:block;width:100%;background:#C9A84C;color:#0B1628;border:none;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;letter-spacing:.04em}'
+    + 'body{font-family:"DM Sans",sans-serif;background:#eee;display:flex;flex-direction:column;align-items:center;padding:16px;gap:12px}'
+    + '#ticket-print{width:420px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15)}'
+    + '.print-btn{width:420px;background:#C9A84C;color:#0B1628;border:none;padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;border-radius:8px;letter-spacing:.04em}'
     + '.print-btn:hover{background:#E8C47A}'
+    + '@media print{'
+    + 'body{background:#fff;padding:0}'
+    + '#ticket-print{box-shadow:none;border-radius:0;width:100%}'
+    + '.print-btn{display:none}'
+    + '}'
     + '</style></head><body>'
-    + '<div class="ticket">'
     + contenido
-    + '<button class="print-btn no-print" onclick="window.print()">&#128438; Imprimir / Guardar como PDF</button>'
-    + '</div>'
-    + '<script>setTimeout(function(){window.print();},800);<\/script>'
+    + '<button class="print-btn" onclick="window.print()">&#128438; Imprimir / Guardar como PDF</button>'
+    + '<script>setTimeout(function(){window.print();},900);<\/script>'
     + '</body></html>';
   ventana.document.write(html);
   ventana.document.close();
