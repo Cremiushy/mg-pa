@@ -36,8 +36,8 @@ var PAYMENTS=[
 ];
 
 var ADMIN_NUMBERS = {
-  principal: '+1 809-356-4915',
-  secundario: '+1 929-257-5851'
+  principal: '+1 809-590-0429',
+  secundario: '+1 809-356-4915'
 };
 
 // AI Reply Engine
