@@ -147,7 +147,11 @@ window.addEventListener('load', function(){
 
 function doLogin(){
   var c = document.getElementById('cedula-input').value.trim();
-  var u = TENANTS.find(t => t.cedula === c);
+  // Buscar con o sin guiones
+  var cClean = c.replace(/-/g,'');
+  var u = TENANTS.find(function(t){ 
+    return t.cedula === c || t.cedula.replace(/-/g,'') === cClean;
+  });
   if(!u){ document.getElementById('ced-err').style.display = 'block'; return; }
   document.getElementById('ced-err').style.display = 'none';
   currentUser = u;
